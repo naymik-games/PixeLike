@@ -404,8 +404,8 @@ class playGame extends Phaser.Scene {
 
     while (!done) {
       console.log(room)
-      var x = Phaser.Math.Between(room.tl.x + 2, room.tr.x - 2);
-      var y = Phaser.Math.Between(room.tr.y + 2, room.br.y - 2);
+      var x = Phaser.Math.Between(room.tl.x + 1, room.tr.x - 1);
+      var y = Phaser.Math.Between(room.tr.y + 1, room.br.y - 1);
       if (this.tileData[y][x] == ROOM_FLOOR) {
         var object = objects.get();
         if (object) {
@@ -427,8 +427,8 @@ class playGame extends Phaser.Scene {
     var done = false
 
     while (!done) {
-      var x = Phaser.Math.Between(room.start.x + 2, room.end.x - 2);
-      var y = Phaser.Math.Between(room.start.y + 2, room.end.y - 2);
+      var x = Phaser.Math.Between(room.start.x + 1, room.end.x - 1);
+      var y = Phaser.Math.Between(room.start.y + 1, room.end.y - 1);
       if (this.tileData[y][x] == 2) {
         var breaker = breakables.get();
         if (breaker) {

@@ -39,8 +39,10 @@ var Smash = new Phaser.Class({
       ) < this.target.width / 2
     ) {
       this.getDamage();
-      //  this.disableBody(true, false);
-      this.hp -= this.scene.player.playerData.power
+      //  this.disableBody(true, );
+      this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
+      /*  this.scene.player.playerData.hp -= 1
+       this.scene.addScore() */
       var tween = this.scene.tweens.add({
         targets: this,
         alpha: .2,

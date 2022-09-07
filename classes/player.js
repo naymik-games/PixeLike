@@ -53,7 +53,7 @@ class Player extends Actor {
     this.scene.anims.create({
       key: 'attack',
       frames: this.anims.generateFrameNumbers(heroKey, { frames: [18, 19, 20, 21] }),
-      frameRate: 10,
+      frameRate: 16,
     });
     this.scene.anims.create({
       key: 'cast',

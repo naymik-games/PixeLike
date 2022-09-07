@@ -13,10 +13,9 @@ class Actor extends Phaser.Physics.Arcade.Sprite {
   getDamage(value) {
     this.scene.tweens.add({
       targets: this,
-      duration: 100,
-      repeat: 3,
+      alpha: .2,
       yoyo: true,
-      alpha: 0.5,
+      duration: 100,
       onStart: () => {
         if (value) {
           this.hp = this.hp - value;

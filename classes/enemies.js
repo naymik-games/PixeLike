@@ -23,16 +23,29 @@ class Enemy extends Actor {
           { x: this.target.x, y: this.target.y },
         ) < this.target.width * .75
       ) {
-        this.hp -= this.scene.player.playerData.power
+        var tween = this.scene.tweens.add({
+          targets: this,
+          alpha: .2,
+          yoyo: true,
+          duration: 100
+        })
+        this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
+        this.scene.player.playerData.hp -= 1
         this.hpBar.p = this.hp / this.hpMax
         //this.hpValue.setText(this.hp)
         if (this.hp < 1) {
+          // this.anims.play(this.dieKey, true);
           this.disableBody(true, false);
           this.scene.player.playerData.skillProgress += this.reward
           this.scene.player.skillPop(this.reward)
           this.scene.addScore()
+          let rand = Math.random();
+          if (rand < .75) {
+            this.scene.placeRandomAt(this.x, this.y, this.rewardItems)
+          }
           this.scene.time.delayedCall(300, () => {
             this.destroy();
+
           });
         }
 
@@ -74,6 +87,7 @@ class Enemy extends Actor {
     this.name = enemyTypes[en].name
     this.type = en
     this.reward = enemyTypes[en].reward
+    this.rewardItems = enemyTypes[en].rewardItems
     this.speed = enemyTypes[en].speed
     this.runKey = enemyTypes[en].runKey
     this.runFrames = enemyTypes[en].runFrames
@@ -88,7 +102,10 @@ class Enemy extends Actor {
     this.hpBar = new HealthBar(scene, this.x, this.y - this.height * 0.4);
     //this.hpValue.setText(this.hp)
   }
-  preUpdate(time) {
+  preUpdate(time, delta) {
+
+
+    super.preUpdate(time, delta)
     // this.hpValue.setPosition(this.x, this.y - this.height * 0.4);
     this.hpBar.x = this.x - 8
     this.hpBar.y = this.y - this.height * 0.7
@@ -155,6 +172,7 @@ class Enemy extends Actor {
     /* */
   }
   initAnimations() {
+
     this.scene.anims.create({
       key: this.runKey,
       frames: this.anims.generateFrameNumbers('enemies', { frames: this.runFrames }),
@@ -185,7 +203,8 @@ let enemyTypes = [
     dieFrames: [5, 6, 7, 8],
     speed: 100,
     movement: 0,
-    reward: 2
+    reward: 2,
+    rewardItems: [6, 10, 10, 10]
   },
   {
     name: 'Skeleton',
@@ -197,6 +216,7 @@ let enemyTypes = [
     dieFrames: [15, 16, 17, 18],
     speed: 25,
     movement: 1,
-    reward: 1
+    reward: 1,
+    rewardItems: [6, 10]
   }
 ]

@@ -144,7 +144,8 @@ let objectTypes = [
     frame: 115,
     id: 10,
     action: function () {
-      this.scene.player.playerData.hp++
+      var rand = Phaser.Math.Between(1, 5)
+      this.scene.player.playerData.hp += rand
       this.scene.player.hpBar.p = this.scene.player.playerData.hp / this.scene.player.playerData.hpMax
       this.scene.addScore()
     }

@@ -24,10 +24,11 @@ const AGRESSOR_RADIUS = 100;
 let gameData;
 var defaultValues = {
   playerData: {
-    hp: 20,
-    hpMax: 20,
+    hp: 50,
+    hpMax: 50,
     gold: 0,
-    power: 1,
+    power: 1,//base strength
+    strength: 1,//multiplier ie 1 * 1.2
     defense: 1,
     critical: 0,
     speed: 110,
