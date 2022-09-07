@@ -17,7 +17,7 @@ class startGame extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(0xf7eac6);
 
-    var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'PixelDungeon', 150).setOrigin(.5).setTint(0xc76210);
+    var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'PixeLike', 150).setOrigin(.5).setTint(0xc76210);
 
     var startNew = this.add.bitmapText(game.config.width / 2 - 50, 275, 'topaz', 'Play New', 50).setOrigin(0, .5).setTint(0x000000);
     startNew.setInteractive();
