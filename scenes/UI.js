@@ -98,13 +98,13 @@ class UIscene extends Phaser.Scene {
       fill: '#000000'
     });
 
-    this.handButton = this.add.image(450, 1535, 'buttons', 1).setOrigin(.5, 0).setInteractive()
-    this.handButton.on('pointerdown', function () {
-      // this.events.emit('hand');
-      this.Main.player.anims.play('attack', true);
-      this.Main.game.events.emit(EVENTS_NAME.attack);
-      this.Main.game.events.emit(EVENTS_NAME.smash);
-    }, this);
+    /*     this.handButton = this.add.image(this.cross.x, this.cross.y, 'buttons', 1).setOrigin(.5).setInteractive()
+        this.handButton.on('pointerdown', function () {
+          // this.events.emit('hand');
+          this.Main.player.anims.play('attack', true);
+          this.Main.game.events.emit(EVENTS_NAME.attack);
+          this.Main.game.events.emit(EVENTS_NAME.smash);
+        }, this); */
 
 
 

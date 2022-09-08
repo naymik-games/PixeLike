@@ -448,7 +448,7 @@ class playGame extends Phaser.Scene {
   placeEnemyAt(col, row) {
     var pos = this.getXY(col, row)
     var enemy = new Enemy(this, pos.x, pos.y, 'enemies', this.player, 0).setScale(1.5)
-    var ranEn = Phaser.Math.Between(0, 1)
+    var ranEn = Phaser.Math.Between(0, 2)
     enemy.setType(this, ranEn)
     this.enemies.add(enemy)
   }

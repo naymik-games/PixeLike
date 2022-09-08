@@ -10,11 +10,13 @@ class GamePad {
     //
     //
     //
-    this.cross = this.scene.add.image(450, 1400, 'cross').setScale(1.5);
+    this.cross = this.scene.add.image(450, 1400, 'cross').setScale(2);
 
     //
     //
     //
+
+
     /* this.btn1 = this.scene.add.image(0, 0, "redButton");
     Align.scaleToGameW(this.btn1, .1);
     this.grid.placeAtIndex(18, this.btn1); */
@@ -27,10 +29,11 @@ class GamePad {
     //
     //
     //
-    this.btnUp = this.scene.add.image(this.cross.x, this.cross.y - 75, "blank").setScale(.75);
-    this.btnDown = this.scene.add.image(this.cross.x, this.cross.y + 75, "blank").setScale(.75);
-    this.btnLeft = this.scene.add.image(this.cross.x - 75, this.cross.y, "blank").setScale(.75);
-    this.btnRight = this.scene.add.image(this.cross.x + 75, this.cross.y, "blank").setScale(.75);
+    this.btnUp = this.scene.add.image(this.cross.x, this.cross.y - 100, "blank").setScale(1);
+    this.btnDown = this.scene.add.image(this.cross.x, this.cross.y + 100, "blank").setScale(1);
+    this.btnLeft = this.scene.add.image(this.cross.x - 100, this.cross.y, "blank").setScale(1);
+    this.btnRight = this.scene.add.image(this.cross.x + 100, this.cross.y, "blank").setScale(1);
+    this.btnMid = this.scene.add.image(this.cross.x, this.cross.y, "blank").setScale(1);
     //
     //
     //
@@ -38,6 +41,7 @@ class GamePad {
     this.btnDown.setInteractive();
     this.btnLeft.setInteractive();
     this.btnRight.setInteractive();
+    this.btnMid.setInteractive();
     // this.btn1.setInteractive();
     //  this.btn2.setInteractive();
     //
@@ -47,6 +51,7 @@ class GamePad {
     this.btnDown.on('pointerdown', this.goDown.bind(this));
     this.btnLeft.on('pointerdown', this.goLeft.bind(this));
     this.btnRight.on('pointerdown', this.goRight.bind(this));
+    this.btnMid.on('pointerdown', this.doAttach.bind(this));
 
     this.btnUp.on('pointerup', this.goUpDone.bind(this));
     this.btnDown.on('pointerup', this.goDownDone.bind(this));
@@ -58,12 +63,20 @@ class GamePad {
     //
     //
     //
-    this.btnUp.alpha = .2;
-    this.btnDown.alpha = .2;
-    this.btnLeft.alpha = .2;
-    this.btnRight.alpha = .2;
+    this.btnUp.alpha = .02;
+    this.btnDown.alpha = .02;
+    this.btnLeft.alpha = .02;
+    this.btnRight.alpha = .02;
+    this.btnMid.alpha = .02;
     //
 
+    /* */
+
+  }
+  doAttach() {
+    this.main.player.anims.play('attack', true);
+    this.main.game.events.emit(EVENTS_NAME.attack);
+    this.main.game.events.emit(EVENTS_NAME.smash);
   }
   goUp() {
     //console.log("go Up");

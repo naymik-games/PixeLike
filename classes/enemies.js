@@ -91,8 +91,7 @@ class Enemy extends Actor {
     this.speed = enemyTypes[en].speed
     this.runKey = enemyTypes[en].runKey
     this.runFrames = enemyTypes[en].runFrames
-    this.dieKey = enemyTypes[en].dieKey
-    this.dieFrames = enemyTypes[en].dieFrames
+
     this.movement = enemyTypes[en].movement
     this.setPushable(false)
     this.initAnimations()
@@ -119,7 +118,9 @@ class Enemy extends Actor {
       ) {
         this.getBody().setVelocityX(this.target.x - this.x);
         this.getBody().setVelocityY(this.target.y - this.y);
-
+        /* var rotation = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
+        this.body.velocity.x = Math.cos(rotation) * 100;
+        this.body.velocity.y = Math.sin(rotation) * 100; */
         this.anims.play(this.runKey, true);
       } else {
         this.getBody().setVelocity(0);
@@ -179,11 +180,7 @@ class Enemy extends Actor {
       frameRate: 12,
     });
 
-    this.scene.anims.create({
-      key: this.dieKey,
-      frames: this.anims.generateFrameNumbers('enemies', { frames: this.dieFrames }),
-      frameRate: 10,
-    });
+
 
     // console.log(this.scene.anims)
   }
@@ -199,8 +196,7 @@ let enemyTypes = [
     hpMax: 3,
     runKey: 'd-run',
     runFrames: [0, 1, 2, 3],
-    dieKey: 'd-run',
-    dieFrames: [5, 6, 7, 8],
+
     speed: 100,
     movement: 0,
     reward: 2,
@@ -211,11 +207,22 @@ let enemyTypes = [
     hp: 4,
     hpMax: 4,
     runKey: 's-run',
-    runFrames: [10, 11, 12, 13],
-    dieKey: 's-run',
-    dieFrames: [15, 16, 17, 18],
+    runFrames: [5, 6, 7, 8],
+
     speed: 25,
     movement: 1,
+    reward: 1,
+    rewardItems: [6, 10]
+  },
+  {
+    name: 'Slime',
+    hp: 4,
+    hpMax: 4,
+    runKey: 's-run',
+    runFrames: [20, 21, 22, 23],
+
+    speed: 80,
+    movement: 0,
     reward: 1,
     rewardItems: [6, 10]
   }
