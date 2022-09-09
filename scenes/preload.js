@@ -158,8 +158,9 @@ class preloadGame extends Phaser.Scene {
     this.load.image('inventory_item', 'assets/sprites/inventory_item.png');
     this.load.image('inventory_item_selected', 'assets/sprites/inventory_item_selected.png');
     this.load.image('player_ui', 'assets/sprites/player_ui.png');
-    this.load.image('PhoneControl2', 'assets/controls/phoneControl.png');
-    this.load.image('PhoneControl', 'assets/controls/phoneControlThumb.png');
+    this.load.image('aButton', 'assets/controls/a_button.png')
+    //this.load.image('PhoneControl2', 'assets/controls/phoneControl.png');
+    // this.load.image('PhoneControl', 'assets/controls/phoneControlThumb.png');
     this.load.image('nav_arrow', 'assets/controls/nav_arrow.png');
     this.load.spritesheet("buttons", "assets/controls/button_icons.png", {
       frameWidth: 100,

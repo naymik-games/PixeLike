@@ -91,7 +91,7 @@ class Enemy extends Actor {
     this.speed = enemyTypes[en].speed
     this.runKey = enemyTypes[en].runKey
     this.runFrames = enemyTypes[en].runFrames
-
+    this.power = enemyTypes[en].power
     this.movement = enemyTypes[en].movement
     this.setPushable(false)
     this.initAnimations()
@@ -194,6 +194,8 @@ let enemyTypes = [
     name: 'Demon',
     hp: 3,
     hpMax: 3,
+    defense: 1,
+    power: 2,
     runKey: 'd-run',
     runFrames: [0, 1, 2, 3],
 
@@ -206,6 +208,8 @@ let enemyTypes = [
     name: 'Skeleton',
     hp: 4,
     hpMax: 4,
+    defense: 1,
+    power: 1,
     runKey: 's-run',
     runFrames: [5, 6, 7, 8],
 
@@ -218,6 +222,8 @@ let enemyTypes = [
     name: 'Slime',
     hp: 4,
     hpMax: 4,
+    defense: 2,
+    power: 1,
     runKey: 's-run',
     runFrames: [20, 21, 22, 23],
 

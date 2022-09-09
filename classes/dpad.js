@@ -33,7 +33,7 @@ class GamePad {
     this.btnDown = this.scene.add.image(this.cross.x, this.cross.y + 100, "blank").setScale(1);
     this.btnLeft = this.scene.add.image(this.cross.x - 100, this.cross.y, "blank").setScale(1);
     this.btnRight = this.scene.add.image(this.cross.x + 100, this.cross.y, "blank").setScale(1);
-    this.btnMid = this.scene.add.image(this.cross.x, this.cross.y, "blank").setScale(1);
+    this.btnMid = this.scene.add.image(this.cross.x, this.cross.y, "aButton").setScale(1);
     //
     //
     //
@@ -67,7 +67,7 @@ class GamePad {
     this.btnDown.alpha = .02;
     this.btnLeft.alpha = .02;
     this.btnRight.alpha = .02;
-    this.btnMid.alpha = .02;
+    this.btnMid.alpha = 1;
     //
 
     /* */

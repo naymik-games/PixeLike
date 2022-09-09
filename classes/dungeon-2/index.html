@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Map Generation Example</title>
+
+
+</head>
+
+<body>
+  <!-- partial:index.partial.html -->
+  <main>
+    <div class="container">
+
+      <canvas id="c" width=1200 height=800></canvas>
+
+    </div>
+  </main>
+
+  <!-- partial -->
+  <script src="utils/random-seed.js"></script>
+  <script src="const.js"></script>
+  <script src="pieces/piece.js"></script>
+  <script src="pieces/room.js"></script>
+
+  <script src="pieces/corridor.js"></script>
+
+
+
+  <script src="utils/array2d.js"></script>
+  <script src="utils/index.js"></script>
+  <script src="utils/random.js"></script>
+  <script src="utils/rectangle.js"></script>
+
+  <script src="generators/generator.js"></script>
+  <script src="generators/dungeon.js"></script>
+
+
+  <script>
+
+
+
+    /*
+    let config = {
+      width: 60,
+      height: 60,
+      roomInterval: 8,
+      minRoom: 5,
+      extraDoors: 5
+    }
+    */
+
+
+    let dungeon = new Dungeon({
+      size: [200, 200],
+      //seed: 'abcd', //omit for generated seed
+      rooms: {
+        initial: {
+          min_size: [3, 5],
+          max_size: [3, 5],
+          max_exits: 1,
+          position: [0, 0] //OPTIONAL pos of initial room 
+        },
+
+        any: {
+          min_size: [5, 5],
+          max_size: [8, 8],
+          max_exits: 4
+        }
+      },
+      max_corridor_length: 15,//8
+      min_corridor_length: 3,//2
+      corridor_density: 0.5, //corridors per room
+      symmetric_rooms: false, // exits must be in the center of a wall if true
+      interconnects: 1, //extra corridors to connect rooms and make circular paths. not 100% guaranteed 1 default
+      max_interconnect_length: 20,//10
+      room_count: 15
+    });
+
+    dungeon.generate();
+    //dungeon.print(); //outputs wall map to console.log
+    console.log('size')
+    console.log(dungeon.size)
+    //console.log('raw walls')
+    //console.log(dungeon.walls.rows)
+    console.log('dungeon children')
+    console.log(dungeon.children)
+    console.log('processed map data')
+    var mapData = dungeon.getTileMap()
+    console.log(mapData)
+    console.log('rooms')
+    console.log(dungeon.roomData)
+    console.log('corridors')
+    console.log(dungeon.corridorData)
+    //make room objects
+    /*     bl: {x: 80, y: 56}
+    br: {x: 92, y: 56}
+    center: {x: 86, y: 53}
+  
+   
+   
+    neighbors: (4) [Room, Room, Room, Room]
+    
+    tl: {x: 80, y: 50}
+    tr: {x: 92, y: 50} */
+    /*  var rooms = []
+     for (let i = 0; i < dungeon.children.length; i++) {
+       const piece = dungeon.children[i];
+       if (piece.tag == 'any' || piece.tag == 'initial') {
+         var doors = []
+         for (let exit of piece.exits) {
+           var pos = piece.global_pos(exit[0]); // [x, y] global pos of the exit
+           doors.push({ x: pos[0], y: pos[1] })
+         }
+         rooms.push({
+           id: piece.id,
+           start: {
+             x: piece.position[0],
+             y: piece.position[1]
+           },
+           end: {
+             x: (piece.position[0] + piece.size[0]) - 1,
+             y: (piece.position[1] + piece.size[1]) - 1
+           },
+           tl: {
+             x: piece.position[0],
+             y: piece.position[1]
+           },
+           br: {
+             x: (piece.position[0] + piece.size[0]) - 1,
+             y: (piece.position[1] + piece.size[1]) - 1
+           },
+           tr: {
+             x: (piece.position[0] + piece.size[0]) - 1,
+             y: piece.position[1]
+           },
+           bl: {
+             x: piece.position[0],
+             y: (piece.position[1] + piece.size[1]) - 1
+           },
+           doors: doors
+ 
+         })
+       }
+     }
+     console.log(rooms)
+     //main conversion
+     var walls = dungeon.walls
+     var mapData = []
+     for (y = 0; y < walls.rows.length; y++) {
+       var temp = []
+       for (x = 0; x < walls.rows[0].length; x++) {
+         if (walls.rows[y][x]) {
+           temp.push(0)
+         } else {
+           temp.push(2)
+         }
+ 
+       }
+       mapData.push(temp)
+     }
+     //room wals
+     for (let i = 0; i < dungeon.children.length; i++) {
+       const piece = dungeon.children[i];
+       for (y = 0; y < piece.walls.rows.length; y++) {
+ 
+         for (x = 0; x < piece.walls.rows[0].length; x++) {
+           if (piece.walls.rows[y][x] == true) {
+             var pos = piece.global_pos([x, y])
+             mapData[pos[1]][pos[0]] = 1
+           }
+ 
+         }
+       }
+     }
+     //doors
+     for (let i = 0; i < dungeon.children.length; i++) {
+       const piece = dungeon.children[i];
+       // console.log(piece)
+       for (let exit of piece.exits) {
+         // console.log(exit)
+         let { x, y, dest_piece } = exit; // local position of exit and piece it exits to
+         var pos = piece.global_pos(exit[0]); // [x, y] global pos of the exit
+         mapData[pos[1]][pos[0]] = 3
+       }
+     } */
+
+
+    //d.print();
+    /*
+    2 //floor
+    1 //wall
+    0 //deadspace
+    3 //item
+    4 //enemy
+    5 //start
+    6 //end
+    7 //door
+    8 //corridor wall
+    9 //key
+    10 //camera
+    */
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    var tilesize = 10
+
+    function drawmap() {
+      for (y = 0; y < mapData.length; y++) {
+        for (x = 0; x < mapData[0].length; x++) {
+          // ctx.fillStyle = "blue";
+          //ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = ["black", "Gray", "Gainsboro", "orange", "purple", "green", "red", "white", "brown", "yellow", "Aquamarine", "PaleVioletRed", "HotPink"][mapData[y][x]]
+          ctx.fillRect(x * tilesize, y * tilesize, tilesize, tilesize)
+        }
+      }
+
+
+      //room labels
+
+      for (var i = 0; i < dungeon.children.length; i++) {
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "blue";
+        ctx.textAlign = "center";
+        ctx.fillText(dungeon.children[i].id, dungeon.children[i].position[0] * tilesize, dungeon.children[i].position[1] * tilesize);
+      }
+      /*       ctx.strokeStyle = "#00ff00";
+          ctx.strokeRect(rooms[3].center.x * tilesize, rooms[3].center.y * tilesize, tilesize, tilesize)
+    
+    
+          ctx.strokeStyle = "#FF0000";
+          ctx.strokeRect(rooms[3].x * tilesize, rooms[3].y * tilesize, rooms[3].size.x * tilesize, rooms[3].size.y * tilesize);
+     */
+
+    }
+
+    drawmap()
+    /*
+    var items =  map.getItems()
+    var rooms =  map.getRooms()
+    var doors = map.getDoors()
+     var playerRoom;
+    //console.log(this.items)
+    for(var i = 0; i < items.length; i++){
+      if (items[i].type == 'start'){
+        playerRoom = items[i].room
+      	
+      }
+    }
+    ctx.strokeStyle = "#00ff00";
+    ctx.strokeRect(rooms[3].center.x * tilesize, rooms[3].center.y * tilesize, tilesize, tilesize)
+    //console.log(rooms[playerRoom].dimensions)
+    
+    
+    
+    ctx.strokeStyle = "#FF0000";
+    ctx.strokeRect(rooms[3].x * tilesize, rooms[3].y * tilesize, rooms[3].w* tilesize, rooms[3].h * tilesize);
+    console.log(rooms[3].dimensions)
+    //console.log(doors[1])
+    ctx.strokeStyle = "#0000ff";
+    ctx.strokeRect(doors[1].x * tilesize, doors[1].y * tilesize, tilesize, tilesize);
+    
+    */
+
+  </script>
+</body>
+
+</html>

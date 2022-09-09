@@ -45,40 +45,90 @@ var defaultValues = {
 }
 let heroKey = 'hero1'
 let onLevel = 0
-let levels = [
+//new version
+/* let levels = [
   {},
 
   {
-    dungeon: { outerLimit: 3, cols: 80, rows: 50, maxRooms: 15, base: 6, extra: 10 },
-    keys: 1
-  },
-  {
-    dungeon: { outerLimit: 3, cols: 80, rows: 50, maxRooms: 15, base: 6, extra: 10 },
-    keys: 1
+    dungeon: {
+      size: [200, 200],
+      //seed: 'abcd', //omit for generated seed
+      rooms: {
+        initial: {
+          min_size: [3, 5],
+          max_size: [3, 5],
+          max_exits: 1,
+          position: [0, 0] //OPTIONAL pos of initial room 
+        },
+
+        any: {
+          min_size: [5, 5],
+          max_size: [8, 8],
+          max_exits: 4
+        }
+      },
+      max_corridor_length: 15,//8
+      min_corridor_length: 3,//2
+      corridor_density: 0.5, //corridors per room
+      symmetric_rooms: false, // exits must be in the center of a wall if true
+      interconnects: 1, //extra corridors to connect rooms and make circular paths. not 100% guaranteed 1 default
+      max_interconnect_length: 20,//10
+      room_count: 15
+    },
+    keys: 2
   },
   {
     dungeon: {
+      size: [200, 200],
+      //seed: 'abcd', //omit for generated seed
+      rooms: {
+        initial: {
+          min_size: [3, 5],
+          max_size: [3, 5],
+          max_exits: 1,
+          position: [0, 0] //OPTIONAL pos of initial room 
+        },
 
-      colums: 101,
-      rows: 101,
-      roomTwistiness: 0.2,
-      fillFraction: 0.6,
-      connectedness: 2,
-      monsterFrequency: .5,
-      numExtraPU: 4,
-      roomOpts: {
-        maxRows: 16,
-        minRows: 6,
-        maxCols: 16,
-        minCols: 6,
-        minSpacing: 2,
-      }
+        any: {
+          min_size: [5, 5],
+          max_size: [8, 8],
+          max_exits: 4
+        }
+      },
+      max_corridor_length: 15,//8
+      min_corridor_length: 3,//2
+      corridor_density: 0.5, //corridors per room
+      symmetric_rooms: false, // exits must be in the center of a wall if true
+      interconnects: 1, //extra corridors to connect rooms and make circular paths. not 100% guaranteed 1 default
+      max_interconnect_length: 20,//10
+      room_count: 15
     },
     keys: 1
   }
 
-]
+] */
+//OLD VERSION
+let levels = [
+  {},
 
+  {
+    type: 'cave',
+    dungeon: { cols: 100, rows: 80 },
+    keys: 2
+  },
+
+  {
+    type: 'dungeon',
+    dungeon: { outerLimit: 3, cols: 80, rows: 50, maxRooms: 15, base: 6, extra: 10 },
+    keys: 2
+  },
+  {
+    type: 'dungeon',
+    dungeon: { outerLimit: 2, cols: 100, rows: 70, maxRooms: 35, base: 6, extra: 10 },
+    keys: 1
+  }
+
+]
 const BLANK = 0;
 const ROOM_WALL = 1
 const ROOM_FLOOR = 2;

@@ -1,7 +1,6 @@
 let game;
 
 let dungeon
-let cave
 window.onload = function () {
   let gameConfig = {
     type: Phaser.AUTO,
@@ -43,20 +42,42 @@ class playGame extends Phaser.Scene {
   create() {
     onLevel++
 
+    dungeon = new Dungeon(levels[onLevel].dungeon);
+    dungeon.generate();
+
+    //console.log(dungeon.map)
+    var mapData = dungeon.getTileMap()
+    console.log(dungeon.roomData)
+    console.log(dungeon.corridorData)
+    // console.log(dungeon.corridoors)
+    // console.log(dungeon.doors)
+    //let mapData = dungeon.map
+
+    this.scene.launch('UIscene');
+
+
+    //copy 2d tile map 
+    this.tileData = JSON.parse(JSON.stringify(mapData));
+    //console.log(this.tileData)
+    //console.log(this.dungeon.rooms)
+
+
+    this.gridWidth = dungeon.size[0]
+    this.gridHeight = dungeon.size[1]
 
     // Create a blank map
     this.map = this.make.tilemap({
       tileWidth: 16,
       tileHeight: 16,
-      width: levels[onLevel].dungeon.cols,
-      height: levels[onLevel].dungeon.rows
+      width: this.gridWidth,
+      height: this.gridHeight
     });
-    this.gridWidth = levels[onLevel].dungeon.cols
-    this.gridHeight = levels[onLevel].dungeon.rows
+
     //this.gridSize = this.dungeon.width * this.dungeon.height;
     this.xOffset = 0
     this.yOffset = 0
     this.squareSize = 16
+
 
 
 
@@ -70,191 +91,28 @@ class playGame extends Phaser.Scene {
 
     //fill blank tiles
     this.groundLayer.fill(0);
-
-
-    this.scene.launch('UIscene');
-
-    //create groups
-    this.enemies = this.physics.add.group()
-    objects = this.physics.add.group({ classType: Collectables, runChildUpdate: false });
-
-    breakables = this.physics.add.group({ classType: Smash, runChildUpdate: false })
-
-    if (levels[onLevel].type == 'dungeon') {
-      this.setUpDungeon()
-    } else {
-      this.setUpCave()
-    }
-
-
-    this.zoom = 5
-    this.cameras.main.setBackgroundColor(0x222222);
-    this.cameras.main.setZoom(this.zoom)
-    this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-
-
-    //physics collisions
-    this.physics.add.collider(this.player, this.stuffLayer);
-    this.physics.add.collider(this.player, this.groundLayer);
-    this.physics.add.collider(
-      this.player,
-      this.enemies,
-      (obj1, obj2) => {
-        console.log(obj2.power)
-        obj1.getDamage(obj2.power);
-      },
-      undefined,
-      this,
-    );
-    this.physics.add.collider(this.player, breakables);
-    this.physics.add.collider(this.enemies, doorGroup);
-
-    this.physics.add.collider(this.player, doorGroup, undefined,
-      (obj1, obj2) => {
-        return obj2.locked
-      }, this);
-
-    this.physics.add.collider(this.enemies, this.groundLayer);
-    this.physics.add.overlap(this.player, objects, (obj1, obj2) => {
-      obj2.action()
-
-      obj2.destroy();
-      this.cameras.main.flash();
-    });
-
-
-
-    //launch minimap scene
-    this.UIscene = this.scene.get('UIscene');
-    this.scene.launch('mapScene');
-
-
-    //movment variables
-    this.isRight = false;
-    this.isLeft = false;
-    this.isDown = false;
-    this.isUp = false;
-
-    // UI EVENT HANDLER ///////////////////////////
-    // var UI = this.scene.get('UI');
-    //  UI.events.on('vision', this.adjustVision, this);
-    this.UIscene.events.on('zoom', this.adjustZoom, this);
-
-    //  UI.events.on('action', this.action, this);
-    //  UI.events.on('shoot', this.shoot, this);
-    //  UI.events.on('hand', this.handAction, this);
-
-    this.playable = true
-    //this.UIscene.toast.showMessage('Hello world')
-
-    ///help.setScrollFactor(0);
-  }
-  update() {
-    //this.computeFOV()
-    if (this.playable && levels[onLevel].type == 'dungeon') {
-      var playerTileX = this.map.worldToTileX(this.player.x);
-      var playerTileY = this.map.worldToTileY(this.player.y);
-      var roomId = dungeon.inRoomID({ x: playerTileX, y: playerTileY })
-      if (roomId > -1) {
-        var roomText = roomId
-      } else {
-        var roomText = '--'
-      }
-      this.events.emit('room', roomText);
-
-    }
-
-    //var room = dungeon.getRoomAt(playerTileX, playerTileY);
-    this.player.update()
-
-    if (this.isRight) {
-      this.player.body.velocity.x = this.player.playerData.speed;
-      this.player.checkFlip();
-      this.player.getBody().setOffset(12, 7);
-      !this.player.anims.isPlaying && this.player.anims.play('run', true);
-    } else if (this.isLeft) {
-      this.player.body.velocity.x = -this.player.playerData.speed;
-      this.player.checkFlip();
-      // this.player.getBody().setOffset(48, 15);
-
-      this.player.getBody().setOffset(21, 7);
-      !this.player.anims.isPlaying && this.player.anims.play('run', true);
-    } else if (this.isUp) {
-      this.player.body.velocity.y = -this.player.playerData.speed;
-      !this.player.anims.isPlaying && this.player.anims.play('run', true);
-    } else if (this.isDown) {
-      this.player.body.velocity.y = this.player.playerData.speed;
-      !this.player.anims.isPlaying && this.player.anims.play('run', true);
-
-    } else {
-      this.stop();
-
-    }
-  }
-  stop() {
-    this.player.body.setVelocity(0);
-    var endCol = Math.floor(this.player.x / 16);
-    var endRow = Math.floor(this.player.y / 16);
-
-
-    var x = endCol * this.squareSize + this.squareSize / 2;
-    var y = endRow * this.squareSize + this.squareSize / 2;
-    this.player.setPosition(x, y)
-
-
-  }
-
-  setUpDungeon() {
-    //let dungeon = new Dungeon(levels[onLevel].dungeon);
-    dungeon = new Dungeon(levels[onLevel].dungeon);
-    dungeon.resetMap();
-    dungeon.generateMapRooms();
-
-    //console.log(dungeon.map)
-
-    console.log(dungeon.rooms)
-    // console.log(dungeon.corridoors)
-    // console.log(dungeon.doors)
-    //let mapData = dungeon.map
-
-
-
-
-
-
-
-
-
-
-    //copy 2d tile map 
-    this.tileData = JSON.parse(JSON.stringify(dungeon.map));
-    //console.log(this.tileData)
-    //console.log(this.dungeon.rooms)
-
-
-
-
-
-
-
     ////////////////////////////////////////////////////////
     //MAP TILES
     /////////////////////////////////////////////////////////
-    const tiles = autotile(this.tileData);
+    //const tiles = autotile(this.tileData);
+    const tiles = this.tileData;
     //console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
         //this.tileData[y][x]
-        if (tiles[y1][x1] == 46) {
+        if (tiles[y1][x1] == 2 || tiles[y1][x1] == 3) {
           this.groundLayer.weightedRandomize([
             { index: 46, weight: 9 },              // 9/10 times, use index 11
             { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
           ], x1, y1);
-        } else if (tiles[y1][x1] == 42) {
+        } else if (tiles[y1][x1] == 1) {
           this.groundLayer.weightedRandomize([
+            { index: 111, weight: 10 }      // 1/10 times, randomly pick 7, 8 or 26
+          ], x1, y1);
+          /* this.groundLayer.weightedRandomize([
             { index: 42, weight: 9 },              // 9/10 times, use index 11
             { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-          ], x1, y1);
+          ], x1, y1); */
         } else {
           this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
         }
@@ -283,7 +141,7 @@ class playGame extends Phaser.Scene {
       }
 
     }) */
-    dungeon.rooms.forEach(room => {
+    dungeon.roomData.forEach(room => {
       room.doors.forEach(door => {
         var doorImg = doorGroup.get();
         if (doorImg) {
@@ -308,9 +166,9 @@ class playGame extends Phaser.Scene {
     //fill stuff layer with blank tiles
     this.stuffLayer.fill(0);
     //copy rooms
-    const rooms = dungeon.rooms.slice();
-    const paths = dungeon.corridoors.slice()
-    console.log(rooms)
+    const rooms = dungeon.roomData.slice();
+    const paths = dungeon.corridorData.slice()
+    //console.log(rooms)
     //pull out start room
     var sid = this.getStartRoom(rooms) //gets first room with more than one door
     const sr = rooms.splice(sid, 1)
@@ -356,7 +214,11 @@ class playGame extends Phaser.Scene {
 
 
 
+    //create groups
+    this.enemies = this.physics.add.group()
+    objects = this.physics.add.group({ classType: Collectables, runChildUpdate: false });
 
+    breakables = this.physics.add.group({ classType: Smash, runChildUpdate: false })
 
     //add player to start room
     //console.log(startRoom)
@@ -422,61 +284,120 @@ class playGame extends Phaser.Scene {
          return tile && !tile.collides
        }) */
     // console.log(this.tileData)
+    this.zoom = 5
+    this.cameras.main.setBackgroundColor(0x222222);
+    this.cameras.main.setZoom(this.zoom)
+    this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
 
+
+    //physics collisions
+    this.physics.add.collider(this.player, this.stuffLayer);
+    this.physics.add.collider(this.player, this.groundLayer);
+    this.physics.add.collider(
+      this.player,
+      this.enemies,
+      (obj1, obj2) => {
+        console.log(obj2.power)
+        obj1.getDamage(obj2.power);
+      },
+      undefined,
+      this,
+    );
+    this.physics.add.collider(this.player, breakables);
+    this.physics.add.collider(this.enemies, doorGroup);
+
+    this.physics.add.collider(this.player, doorGroup, undefined,
+      (obj1, obj2) => {
+        return obj2.locked
+      }, this);
+
+    this.physics.add.collider(this.enemies, this.groundLayer);
+    this.physics.add.overlap(this.player, objects, (obj1, obj2) => {
+      obj2.action()
+
+      obj2.destroy();
+      this.cameras.main.flash();
+    });
+
+    //launch minimap scene
+    this.UIscene = this.scene.get('UIscene');
+    this.scene.launch('mapScene');
+
+
+    //movment variables
+    this.isRight = false;
+    this.isLeft = false;
+    this.isDown = false;
+    this.isUp = false;
+
+    // UI EVENT HANDLER ///////////////////////////
+    // var UI = this.scene.get('UI');
+    //  UI.events.on('vision', this.adjustVision, this);
+    this.UIscene.events.on('zoom', this.adjustZoom, this);
+
+    //  UI.events.on('action', this.action, this);
+    //  UI.events.on('shoot', this.shoot, this);
+    //  UI.events.on('hand', this.handAction, this);
+
+    this.playable = true
+    //this.UIscene.toast.showMessage('Hello world')
+
+    ///help.setScrollFactor(0);
   }
+  update() {
+    //this.computeFOV()
+    /*     if (this.playable) {
+          var playerTileX = this.map.worldToTileX(this.player.x);
+          var playerTileY = this.map.worldToTileY(this.player.y);
+          var roomId = dungeon.inRoomID({ x: playerTileX, y: playerTileY })
+          if (roomId > -1) {
+            var roomText = roomId
+          } else {
+            var roomText = '--'
+          }
+          this.events.emit('room', roomText);
+    
+        } */
 
+    //var room = dungeon.getRoomAt(playerTileX, playerTileY);
+    this.player.update()
 
-  setUpCave() {
-    var rand = Phaser.Math.Between(0, 100)
-    if (rand < 1) {
-      cave = new Cave(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows);
-      cave.generateMap();
-      console.log(cave)
-      this.tileData = JSON.parse(JSON.stringify(cave.map));
+    if (this.isRight) {
+      this.player.body.velocity.x = this.player.playerData.speed;
+      this.player.checkFlip();
+      this.player.getBody().setOffset(12, 7);
+      !this.player.anims.isPlaying && this.player.anims.play('run', true);
+    } else if (this.isLeft) {
+      this.player.body.velocity.x = -this.player.playerData.speed;
+      this.player.checkFlip();
+      // this.player.getBody().setOffset(48, 15);
+
+      this.player.getBody().setOffset(21, 7);
+      !this.player.anims.isPlaying && this.player.anims.play('run', true);
+    } else if (this.isUp) {
+      this.player.body.velocity.y = -this.player.playerData.speed;
+      !this.player.anims.isPlaying && this.player.anims.play('run', true);
+    } else if (this.isDown) {
+      this.player.body.velocity.y = this.player.playerData.speed;
+      !this.player.anims.isPlaying && this.player.anims.play('run', true);
+
     } else {
-      cave = new CaveAlt(100, 100)
-      var map = cave.generateBoard();
-      console.log(map)
-      this.tileData = JSON.parse(JSON.stringify(map));
+      this.stop();
+
     }
-
-
-
-
-
-    ////////////////////////////////////////////////////////
-    //MAP TILES
-    /////////////////////////////////////////////////////////
-    var tiles = this.tileData
-    //console.log(tiles)
-    for (var y1 = 0; y1 < this.tileData.length; y1++) {
-      for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
-        //this.tileData[y][x]
-        if (tiles[y1][x1] == 2) {
-          this.groundLayer.weightedRandomize([
-            { index: 69, weight: 10 },              // 9/10 times, use index 11
-            // { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-          ], x1, y1);
-        } else if (tiles[y1][x1] == 0) {
-          this.groundLayer.weightedRandomize([
-            { index: 47, weight: 10 },              // 9/10 times, use index 11
-            // { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-          ], x1, y1);
-        } else {
-          this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
-        }
-
-      }
-    }
-    this.groundLayer.setCollisionByExclusion([69]);
-    //END MAP TILES
-    //add player to start room
-    //console.log(startRoom)
-    const x = this.map.tileToWorldX(50);
-    const y = this.map.tileToWorldY(40);
-    this.player = new Player(this, x, y);
   }
+  stop() {
+    this.player.body.setVelocity(0);
+    var endCol = Math.floor(this.player.x / 16);
+    var endRow = Math.floor(this.player.y / 16);
 
+
+    var x = endCol * this.squareSize + this.squareSize / 2;
+    var y = endRow * this.squareSize + this.squareSize / 2;
+    this.player.setPosition(x, y)
+
+
+  }
   showMapButton() {
     this.events.emit('mapButton');
   }
@@ -578,51 +499,6 @@ class playGame extends Phaser.Scene {
     this.cameras.main.setZoom(this.zoom)
     this.cameras.main.centerOn(this.player.x, this.player.y)
   }
-  placeTreasure(board, color, treasureHiddenLimit) {
-
-    for (var x = 0; x < 100; x++) {
-      for (var y = 0; y < 100; y++) {
-        if (board[x][y]) {
-          var nbs = countAliveNeighbours(board, x, y);
-          if (nbs == 1) {
-            ctx.fillRect(x * 10, y * 10, 10, 10);
-            treasureHiddenLimit--;
-            if (treasureHiddenLimit === 0)
-              return;
-          }
-        }
-      }
-    }
-  }
-
-
-  //analize neighbour cells
-  countAliveNeighbours(board, i, j) {
-    var count = 0;
-
-    for (var m = i - 1; m <= i + 1; m++) {
-      for (var n = j - 1; n <= j + 1; n++) {
-        if (m === i && n === j) {
-          continue;
-        }
-
-        var row = m;
-        var col = n;
-        //we looking out of the array's bounds
-        if (m >= board.length || m < 0)
-          continue;
-        //we looking out of the array's bounds
-        else if (n >= board[0].length || n < 0)
-          continue;
-
-        else if (board[row][col] > 0) {
-          count++;
-        }
-      }
-    }
-    return count;
-  }
-
   //HELPERS //////////////////////////////////
   getCR(pixelX, pixelY) {
     var endCol = Math.floor(pixelX / 16);
