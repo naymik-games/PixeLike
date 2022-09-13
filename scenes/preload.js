@@ -119,6 +119,13 @@ class preloadGame extends Phaser.Scene {
       //spacing:2
 
     });
+    this.load.spritesheet("traps", "assets/spritesheets/a-traps.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+      //margin: 2,
+      //spacing:2
+
+    });
     this.load.spritesheet("particle_color", "assets/sprites/particles.png", {
       frameWidth: 6,
       frameHeight: 6

@@ -110,18 +110,36 @@ let onLevel = 0
 //OLD VERSION
 let levels = [
   {},
-
   {
-    type: 'cave',
-    dungeon: { cols: 100, rows: 80 },
+    type: 'dungeon',
+    dungeon: {
+      mazeType: 'fifo',
+      roomAttempts: 100, //100
+      roomMinSize: 2,//2 half 2 = 5
+      roomMaxSize: 5, //5 half 5 = 10
+      connectiveness: 1 / 40,
+      halfHeight: 12,
+      halftWidth: 32
+    },
     keys: 2
   },
-
+  {
+    type: 'cave',
+    dungeon: { cols: 70, rows: 60 },
+    keys: 2
+  },
   {
     type: 'dungeon',
     dungeon: { outerLimit: 3, cols: 80, rows: 50, maxRooms: 15, base: 6, extra: 10 },
     keys: 2
   },
+  {
+    type: 'cave',
+    dungeon: { cols: 60, rows: 40 },
+    keys: 2
+  },
+
+
   {
     type: 'dungeon',
     dungeon: { outerLimit: 2, cols: 100, rows: 70, maxRooms: 35, base: 6, extra: 10 },
@@ -134,4 +152,4 @@ const ROOM_WALL = 1
 const ROOM_FLOOR = 2;
 const PATH_FLOOR = 3;
 const PATH_WALL = 4;
-const DOOR = 5
+const DOOR = 3

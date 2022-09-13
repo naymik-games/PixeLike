@@ -123,7 +123,7 @@ class UIscene extends Phaser.Scene {
       this.healthText.setText(this.Main.player.playerData.hp)
       this.goldText.setText(this.Main.player.playerData.gold)
       this.magicText.setText(this.Main.player.playerData.magic)
-      console.log(this.Main.player.playerData.skillProgress)
+      // console.log(this.Main.player.playerData.skillProgress)
       this.progressMeter.displayWidth = 250 * (this.Main.player.playerData.skillProgress / this.Main.player.playerData.skillGoal);
     }, this);
 

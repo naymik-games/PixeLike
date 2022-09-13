@@ -48,11 +48,11 @@ class playGame extends Phaser.Scene {
     this.map = this.make.tilemap({
       tileWidth: 16,
       tileHeight: 16,
-      width: (levels[onLevel].dungeon.halftWidth * 2) + 1,
-      height: (levels[onLevel].dungeon.halfHeight * 2) + 1
+      width: levels[onLevel].dungeon.cols,
+      height: levels[onLevel].dungeon.rows
     });
-    this.gridWidth = (levels[onLevel].dungeon.halftWidth * 2) + 1
-    this.gridHeight = (levels[onLevel].dungeon.halfHeight * 2) + 1
+    this.gridWidth = levels[onLevel].dungeon.cols
+    this.gridHeight = levels[onLevel].dungeon.rows
     //this.gridSize = this.dungeon.width * this.dungeon.height;
     this.xOffset = 0
     this.yOffset = 0
@@ -67,7 +67,7 @@ class playGame extends Phaser.Scene {
 
     this.groundLayer = this.map.createBlankLayer("Ground", tileset); // Wall & floor
     this.stuffLayer = this.map.createBlankLayer("Stuff", tileset); // Chest, stairs, etc.
-    this.visionLayer = this.map.createBlankLayer("Vision", tileset); // visibility
+
     //fill blank tiles
     this.groundLayer.fill(0);
 
@@ -125,7 +125,7 @@ class playGame extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.traps, (obj1, obj2) => {
       //obj2.action()
       //obj2.destroy();
-      //console.log('trap')
+      console.log('trap')
       if (obj2.anims.currentFrame == 0) {
         this.cameras.main.flash();
       }
@@ -167,13 +167,8 @@ class playGame extends Phaser.Scene {
       var roomId = dungeon.inRoomID({ x: playerTileX, y: playerTileY })
       if (roomId > -1) {
         var roomText = roomId
-        const index = dungeon.roomsObj.findIndex(object => {
-          return object.id === roomId;
-        });
-        this.setRoomAlpha(dungeon.roomsObj[index], 0)
       } else {
         var roomText = '--'
-        this.setCorridorAlpha(playerTileX, playerTileY, 0)
       }
       this.events.emit('room', roomText);
 
@@ -222,52 +217,42 @@ class playGame extends Phaser.Scene {
   setUpDungeon() {
     //let dungeon = new Dungeon(levels[onLevel].dungeon);
     dungeon = new Dungeon(levels[onLevel].dungeon);
-    dungeon.generate()
+    dungeon.resetMap();
+    dungeon.generateMapRooms();
 
     //console.log(dungeon.map)
 
-    // console.log(dungeon.mazeData);
-    //console.log(dungeon.roomsObj)
-    // console.log(dungeon.corridors)
-    // console.log(dungeon.doors)
-    // console.log(dungeon.autoTileData)
+    console.log(dungeon.rooms)
     // console.log(dungeon.corridoors)
     // console.log(dungeon.doors)
     //let mapData = dungeon.map
 
     //copy 2d tile map 
-    this.tileData = JSON.parse(JSON.stringify(dungeon.mazeData));
-    console.log(this.tileData)
+    this.tileData = JSON.parse(JSON.stringify(dungeon.map));
+    //console.log(this.tileData)
     //console.log(this.dungeon.rooms)
 
     ////////////////////////////////////////////////////////
     //MAP TILES
     /////////////////////////////////////////////////////////
-    const tiles = autotile(dungeon.autoTileData);
-    console.log(tiles)
+    const tiles = autotile(this.tileData);
+    //console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
-        if (tiles[y1][x1] == 0) {
+        //this.tileData[y][x]
+        if (tiles[y1][x1] == 46) {
           this.groundLayer.weightedRandomize([
-            { index: 0, weight: 9 },              // 9/10 times, use index 11
+            { index: 46, weight: 9 },              // 9/10 times, use index 11
             { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
           ], x1, y1);
+        } else if (tiles[y1][x1] == 42) {
+          this.groundLayer.weightedRandomize([
+            { index: 42, weight: 9 },              // 9/10 times, use index 11
+            { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+          ], x1, y1);
+        } else {
+          this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
         }
-        this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
-        //this.tileData[y][x]
-        /*  if (tiles[y1][x1] == 46) {
-           this.groundLayer.weightedRandomize([
-             { index: 46, weight: 10 },              // 9/10 times, use index 11
-             //{ index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-           ], x1, y1);
-         } else if (tiles[y1][x1] == 42) {
-           this.groundLayer.weightedRandomize([
-             { index: 42, weight: 10 },              // 9/10 times, use index 11
-             // { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-           ], x1, y1);
-         } else {
-           this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
-         } */
 
       }
     }
@@ -277,37 +262,53 @@ class playGame extends Phaser.Scene {
     // DOORS
     //////////////////////////////
     doorGroup = this.physics.add.group({ classType: Door, runChildUpdate: false });
-
-    dungeon.doors.forEach(door => {
+    /* dungeon.doors.forEach(door => {
+      //this.stuffLayer.putTileAt(56, door.x, door.y);
       var doorImg = doorGroup.get();
       if (doorImg) {
         //var pos = this.getXY(doors[i].x, doors[i].y)
         var pos = this.getXY(door.x, door.y)
         //var pos = this.map.tileToWorldXY(door.x, door.y)
         doorImg.setType(doorTypes[0])
-        /* if (room.doors.length == 1) {
-          doorImg.locked = true
-        } */
+
         doorImg.setActive(true);
         doorImg.setVisible(true);
         doorImg.launch(pos.x, pos.y);
         console.log('door added')
       }
-    })
 
+    }) */
+    dungeon.rooms.forEach(room => {
+      room.doors.forEach(door => {
+        var doorImg = doorGroup.get();
+        if (doorImg) {
+          //var pos = this.getXY(doors[i].x, doors[i].y)
+          var pos = this.getXY(door.x, door.y)
+          //var pos = this.map.tileToWorldXY(door.x, door.y)
+          doorImg.setType(doorTypes[0])
+          if (room.doors.length == 1) {
+            doorImg.locked = true
+          }
+          doorImg.setActive(true);
+          doorImg.setVisible(true);
+          doorImg.launch(pos.x, pos.y);
+          console.log('door added')
+        }
+      })
+    })
     //END DOORS
 
 
     // console.log(test.getDoors())
-
-
+    //fill stuff layer with blank tiles
+    this.stuffLayer.fill(0);
     //copy rooms
-    const rooms = dungeon.roomsObj.slice();
-    const paths = dungeon.corridors.slice()
+    const rooms = dungeon.rooms.slice();
+    const paths = dungeon.corridoors.slice()
     console.log(rooms)
     //pull out start room
-    // var sid = this.getStartRoom(rooms) //gets first room with more than one door
-    const sr = rooms.splice(1, 1)
+    var sid = this.getStartRoom(rooms) //gets first room with more than one door
+    const sr = rooms.splice(sid, 1)
     const startRoom = sr[0]
     //const startRoom = rooms.shift();  gets the first room
     this.startRoomID = startRoom.id
@@ -316,14 +317,12 @@ class playGame extends Phaser.Scene {
     const endRoom = Phaser.Utils.Array.RemoveRandomElement(rooms);
     //all other rooms
     const otherRooms = Phaser.Utils.Array.Shuffle(rooms).slice();
-
-
-
-
-    //fill stuff layer with blank tiles
-    this.stuffLayer.fill(48);
+    console.log(otherRooms)
     // Place the stairs in end room
     this.stuffLayer.putTileAt(53, endRoom.center.x, endRoom.center.y);
+
+
+
     //make stairs interactive
     this.stuffLayer.setTileIndexCallback(53, () => {
       if (this.player.canExit) {
@@ -347,7 +346,7 @@ class playGame extends Phaser.Scene {
     });
     //set collision tiles for the layers
     //this.groundLayer.setCollision([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 25, 30, 35, 50, 51, 52, 53]);
-    this.groundLayer.setCollisionByExclusion([0]);
+    this.groundLayer.setCollisionByExclusion([46, 64, 65, 66, 67]);
     this.stuffLayer.setCollisionByExclusion([78]);
 
 
@@ -359,8 +358,8 @@ class playGame extends Phaser.Scene {
     const x = this.map.tileToWorldX(startRoom.center.x);
     const y = this.map.tileToWorldY(startRoom.center.y);
     this.player = new Player(this, x, y);
-    this.setRoomAlpha(startRoom, 0)
-    //this.clearRoom(startRoom.id)
+
+
 
     //place items by  by count
     //console.log(this.tileData)
@@ -375,6 +374,7 @@ class playGame extends Phaser.Scene {
     }
     //map
     var coord2 = this.getRandomSpotRoom(otherRooms[Phaser.Math.Between(0, otherRooms.length - 1)])
+
     this.placeObject(3, coord2)
     //randomly fill rooms
     otherRooms.forEach(room => {
@@ -383,19 +383,28 @@ class playGame extends Phaser.Scene {
       this.placeObject(type, coord3)
       let rand = Math.random();
       if (rand <= 0.75) {
+        // 50% chance of a pot anywhere in the room... except don't block a door!
+        //book
+
+
         var coord4 = this.getRandomSpotRoom(room)
         this.placeEnemyAt(coord4.x, coord4.y)
         var coord5 = this.getRandomSpotRoom(room)
         this.placeTrapAt(coord5.x, coord5.y)
-
+        /*         var x = Phaser.Math.Between(room.tl.x + 2, room.tr.x - 2);
+                var y = Phaser.Math.Between(room.tl.y + 2, room.bl.y - 2);
+                this.placeEnemyAt(x, y) */
       }
       rand = Math.random();
-      var ranAmount = Phaser.Math.Between(0, 3)
+
+      var ranAmount = Phaser.Math.Between(0, 4)
       for (var b = 0; b < ranAmount; b++) {
         var smashType = Phaser.Math.Between(0, 4)
         var coord = this.getRandomSpotRoom(room)
         this.placeBreakable(smashType, coord)
       }
+
+
 
     });
 
@@ -408,14 +417,14 @@ class playGame extends Phaser.Scene {
         this.placeEnemyAt(path.x, path.y)
       }
     }
-
-    this.visionLayer.fill(78).setDepth(100);
-
-
-    /*  this.fov = new Mrpas(this.gridWidth, this.gridHeight, (x, y) => {
-       const tile = this.groundLayer.getTileAt(x, y)
-       return tile && !tile.collides
-     }) */
+    /*    this.visionLayer = this.map.createBlankLayer("Vision", tileset); // visibility
+       this.visionLayer.fill(78).setDepth(100);
+   
+   
+       this.fov = new Mrpas(60, 40, (x, y) => {
+         const tile = this.groundLayer.getTileAt(x, y)
+         return tile && !tile.collides
+       }) */
     // console.log(this.tileData)
 
   }
@@ -452,8 +461,8 @@ class playGame extends Phaser.Scene {
         //this.tileData[y][x]
         if (tiles[y1][x1] == 2) {
           this.groundLayer.weightedRandomize([
-            { index: 69, weight: 9 },              // 9/10 times, use index 11
-            { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+            { index: 69, weight: 10 },              // 9/10 times, use index 11
+            // { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
           ], x1, y1);
         } else if (tiles[y1][x1] == 0) {
           this.groundLayer.weightedRandomize([
@@ -509,7 +518,7 @@ class playGame extends Phaser.Scene {
     this.events.emit('mapButton');
   }
   clearRoom(id) {
-    var room = dungeon.roomsObj[id]
+    var room = dungeon.rooms[id]
     for (var y = room.start.y; y <= room.end.y; ++y) {
       for (var x = room.start.x; x <= room.end.x; ++x) {
         var tile = this.visionLayer.getTileAt(x, y)
@@ -596,8 +605,8 @@ class playGame extends Phaser.Scene {
     var done = false
     while (!done) {
       console.log(room)
-      var x = Phaser.Math.Between(room.start.x, room.end.x);
-      var y = Phaser.Math.Between(room.start.y, room.end.y);
+      var x = Phaser.Math.Between(room.tl.x + 1, room.tr.x - 1);
+      var y = Phaser.Math.Between(room.tr.y + 1, room.br.y - 1);
       if (this.tileData[y][x] == ROOM_FLOOR) {
         done = true
         return { x: x, y: y }
@@ -700,27 +709,6 @@ class playGame extends Phaser.Scene {
     gameData.playerData = this.player.playerData
     localStorage.setItem('PixelDungeonSave', JSON.stringify(gameData));
   }
-  setRoomAlpha(room, alpha) {
-
-    this.visionLayer.forEachTile(
-      t => (t.alpha = alpha),
-      this,
-      room.x - 1,
-      room.y - 1,
-      room.w + 2,
-      room.h + 2
-    );
-  }
-  setCorridorAlpha(x, y, alpha) {
-    this.visionLayer.forEachTile(
-      t => (t.alpha = alpha),
-      this,
-      x - 2,
-      y - 2,
-      x + 2,
-      y + 2
-    );
-  }
   computeFOV() {
     if (!this.fov || !this.map || !this.visionLayer || !this.player) {
       return
@@ -738,7 +726,7 @@ class playGame extends Phaser.Scene {
     // set all tiles within camera view to invisible
     for (let y = bounds.y; y < bounds.y + bounds.height; y++) {
       for (let x = bounds.x; x < bounds.x + bounds.width; x++) {
-        if (y < 0 || y >= bounds.y + bounds.height || x < 0 || x >= bounds.x + bounds.width) {
+        if (y < 0 || y >= 40 || x < 0 || x >= 60) {
           continue
         }
 
@@ -760,7 +748,7 @@ class playGame extends Phaser.Scene {
     this.fov.compute(
       px,
       py,
-      5,
+      13,
       (x, y) => {
         const tile = this.visionLayer.getTileAt(x, y)
         if (!tile) {
