@@ -169,7 +169,12 @@ class mapScene extends Phaser.Scene {
     var playerCR = this.main.getCR(playerX, playerY)
     console.log(playerCR)
     this.miniContainer = this.add.container()
-    this.tileSize = 900 / this.main.gridWidth
+    if (this.main.gridWidth >= this.main.gridHeight) {
+      this.tileSize = 900 / this.main.gridWidth
+    } else {
+      this.tileSize = 1240 / this.main.gridHeight
+    }
+
     for (var y = 0; y < this.main.tileData.length; y++) {
       var tempArray = []
       for (var x = 0; x < this.main.tileData[0].length; x++) {
@@ -178,7 +183,7 @@ class mapScene extends Phaser.Scene {
         if (this.main.tileData[y][x] == 4) {
           var fr = 1
         } else if (this.main.tileData[y][x] == 3) {
-          var fr = 2
+          var fr = 3
         } else if (this.main.tileData[y][x] == 2) {
           var fr = 2
         } else if (this.main.tileData[y][x] == 1) {

@@ -33,6 +33,7 @@ class startGame extends Phaser.Scene {
     localStorage.removeItem('PixelDungeonSave');
     localStorage.setItem('PixelDungeonSave', JSON.stringify(defaultValues));
     gameData = defaultValues;
+    onLevel = 0
     this.scene.start('playGame');
 
 

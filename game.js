@@ -41,27 +41,46 @@ class playGame extends Phaser.Scene {
 
   }
   create() {
+    dungeon = null
+    cave = null
     onLevel++
 
-
+    let tileset
     // Create a blank map
-    this.map = this.make.tilemap({
-      tileWidth: 16,
-      tileHeight: 16,
-      width: (levels[onLevel].dungeon.halftWidth * 2) + 1,
-      height: (levels[onLevel].dungeon.halfHeight * 2) + 1
-    });
-    this.gridWidth = (levels[onLevel].dungeon.halftWidth * 2) + 1
-    this.gridHeight = (levels[onLevel].dungeon.halfHeight * 2) + 1
-    //this.gridSize = this.dungeon.width * this.dungeon.height;
-    this.xOffset = 0
-    this.yOffset = 0
-    this.squareSize = 16
+    if (levels[onLevel].type == 'dungeon') {
+      this.map = this.make.tilemap({
+        tileWidth: 16,
+        tileHeight: 16,
+        width: (levels[onLevel].dungeon.halftWidth * 2) + 1,
+        height: (levels[onLevel].dungeon.halfHeight * 2) + 1
+      });
+      this.gridWidth = (levels[onLevel].dungeon.halftWidth * 2) + 1
+      this.gridHeight = (levels[onLevel].dungeon.halfHeight * 2) + 1
+      //this.gridSize = this.dungeon.width * this.dungeon.height;
+      this.xOffset = 0
+      this.yOffset = 0
+      this.squareSize = 16
+      tileset = this.map.addTilesetImage("d_tiles", null, 16, 16, 0, 0);
+    } else {
+      this.map = this.make.tilemap({
+        tileWidth: 16,
+        tileHeight: 16,
+        width: levels[onLevel].dungeon.cols,
+        height: levels[onLevel].dungeon.rows
+      });
+      this.gridWidth = (levels[onLevel].dungeon.halftWidth * 2) + 1
+      this.gridHeight = (levels[onLevel].dungeon.halfHeight * 2) + 1
+      //this.gridSize = this.dungeon.width * this.dungeon.height;
+      this.xOffset = 0
+      this.yOffset = 0
+      this.squareSize = 16
+      tileset = this.map.addTilesetImage("c_tiles", null, 16, 16, 0, 0);
+    }
 
 
 
     // Load up a tileset, in this case, the tileset has 1px margin & 2px padding (last two arguments)
-    const tileset = this.map.addTilesetImage("tiles", null, 16, 16, 0, 0);
+
 
     // Create empty layers. One for ground, one for stuff
 
@@ -126,9 +145,7 @@ class playGame extends Phaser.Scene {
       //obj2.action()
       //obj2.destroy();
       //console.log('trap')
-      if (obj2.anims.currentFrame == 0) {
-        this.cameras.main.flash();
-      }
+      obj1.getDamage(obj2.power);
 
     });
 
@@ -161,7 +178,7 @@ class playGame extends Phaser.Scene {
   }
   update() {
     //this.computeFOV()
-    if (this.playable && levels[onLevel].type == 'dungeon') {
+    if (this.playable && this.player.alive && levels[onLevel].type == 'dungeon') {
       var playerTileX = this.map.worldToTileX(this.player.x);
       var playerTileY = this.map.worldToTileY(this.player.y);
       var roomId = dungeon.inRoomID({ x: playerTileX, y: playerTileY })
@@ -218,7 +235,21 @@ class playGame extends Phaser.Scene {
 
 
   }
+  die() {
+    this.scene.stop('UIscene')
+    this.time.delayedCall(1500, () => {
+      const cam = this.cameras.main;
+      cam.fade(500, 0, 0, 0);
+      cam.once("camerafadeoutcomplete", () => {
+        // this.player.destroy();
 
+
+        this.scene.start('startGame')
+      });
+
+    });
+    //this.scene.pause()
+  }
   setUpDungeon() {
     //let dungeon = new Dungeon(levels[onLevel].dungeon);
     dungeon = new Dungeon(levels[onLevel].dungeon);
@@ -244,12 +275,12 @@ class playGame extends Phaser.Scene {
     //MAP TILES
     /////////////////////////////////////////////////////////
     const tiles = autotile(dungeon.autoTileData);
-    console.log(tiles)
+    // console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
         if (tiles[y1][x1] == 0) {
           this.groundLayer.weightedRandomize([
-            { index: 0, weight: 9 },              // 9/10 times, use index 11
+            { index: 0, weight: 10 },              // 9/10 times, use index 11
             { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
           ], x1, y1);
         }
@@ -291,7 +322,7 @@ class playGame extends Phaser.Scene {
         doorImg.setActive(true);
         doorImg.setVisible(true);
         doorImg.launch(pos.x, pos.y);
-        console.log('door added')
+        // console.log('door added')
       }
     })
 
@@ -411,7 +442,7 @@ class playGame extends Phaser.Scene {
 
     this.visionLayer.fill(78).setDepth(100);
 
-
+    this.visionLayer.visible = false
     /*  this.fov = new Mrpas(this.gridWidth, this.gridHeight, (x, y) => {
        const tile = this.groundLayer.getTileAt(x, y)
        return tile && !tile.collides
@@ -422,21 +453,21 @@ class playGame extends Phaser.Scene {
 
 
   setUpCave() {
-    var rand = Phaser.Math.Between(0, 100)
-    if (rand < 1) {
-      cave = new Cave(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows);
-      cave.generateMap();
-      console.log('Cave 1')
-      console.log(cave.map)
+    //var rand = Phaser.Math.Between(0, 100)
+    //if (rand < 1) {
+    cave = new Cave(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows);
+    cave.generateMap();
+    console.log('Cave 1')
+    console.log(cave.map)
 
-      this.tileData = JSON.parse(JSON.stringify(cave.map));
-    } else {
-      cave = new CaveAlt(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows)
-      var map = cave.generateBoard();
-      console.log('Cave Alt')
-      console.log(map)
-      this.tileData = JSON.parse(JSON.stringify(map));
-    }
+    this.tileData = JSON.parse(JSON.stringify(cave.map));
+    // } else {
+    /*  cave = new CaveAlt(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows)
+     var map = cave.generateBoard();
+     console.log('Cave Alt')
+     console.log(map)
+     this.tileData = JSON.parse(JSON.stringify(map)); */
+    // }
 
 
 
@@ -445,28 +476,31 @@ class playGame extends Phaser.Scene {
     ////////////////////////////////////////////////////////
     //MAP TILES
     /////////////////////////////////////////////////////////
-    var tiles = this.tileData
-    //console.log(tiles)
+    //var tiles = this.tileData
+    const tiles = autotile(this.tileData);
+    console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
+        this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
         //this.tileData[y][x]
-        if (tiles[y1][x1] == 2) {
-          this.groundLayer.weightedRandomize([
-            { index: 69, weight: 9 },              // 9/10 times, use index 11
-            { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-          ], x1, y1);
-        } else if (tiles[y1][x1] == 0) {
-          this.groundLayer.weightedRandomize([
-            { index: 47, weight: 10 },              // 9/10 times, use index 11
-            // { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
-          ], x1, y1);
-        } else {
-          this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
-        }
+        /*        if (tiles[y1][x1] == 2) {
+                 this.groundLayer.weightedRandomize([
+                   { index: 69, weight: 9 },              // 9/10 times, use index 11
+                   { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+                 ], x1, y1);
+               } else if (tiles[y1][x1] == 0) {
+                 this.groundLayer.weightedRandomize([
+                   { index: 47, weight: 10 },              // 9/10 times, use index 11
+                   // { index: [60, 61, 62, 63, 71, 72, 73], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+                 ], x1, y1);
+               } else {
+                 this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
+               } */
 
       }
     }
-    this.groundLayer.setCollisionByExclusion([69]);
+    this.groundLayer.setCollision([0]);
+    //this.groundLayer.setCollisionByExclusion([2]);
     //END MAP TILES
     //add player to start room
 
@@ -595,7 +629,7 @@ class playGame extends Phaser.Scene {
   getRandomSpotRoom(room) {
     var done = false
     while (!done) {
-      console.log(room)
+      //console.log(room)
       var x = Phaser.Math.Between(room.start.x, room.end.x);
       var y = Phaser.Math.Between(room.start.y, room.end.y);
       if (this.tileData[y][x] == ROOM_FLOOR) {
@@ -608,8 +642,8 @@ class playGame extends Phaser.Scene {
     var done = false
     while (!done) {
 
-      var x = Phaser.Math.Between(0, levels[onLevel].dungeon.cols)
-      var y = Phaser.Math.Between(0, levels[onLevel].dungeon.rows);
+      var x = Phaser.Math.Between(0, levels[onLevel].dungeon.cols - 1)
+      var y = Phaser.Math.Between(0, levels[onLevel].dungeon.rows - 1);
       if (this.tileData[y][x] == ROOM_FLOOR) {
         done = true
         return { x: x, y: y }

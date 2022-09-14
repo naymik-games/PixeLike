@@ -1,3 +1,4 @@
+var myrng = new Math.seedrandom();
 class Dungeon {
   constructor(config) {
 
@@ -26,10 +27,10 @@ class Dungeon {
 
 
 
-  randomRange(a, b) { return a + Math.random() * (b - a); }
+  randomRange(a, b) { return a + myrng() * (b - a); }
 
   shuffle(o) {
-    for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    for (var j, x, i = o.length; i; j = Math.floor(myrng() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
   }
   inRoom({ x, y }) {
@@ -116,12 +117,12 @@ class Dungeon {
   setMaze(x, y, v) { this.maze[y * this.vw + x] = v; }
   getMaze(x, y) { return this.maze[y * this.vw + x]; }
   pos(x, y, px, py) { return { "x": x, "y": y }; }
-  randOrd() { return Math.round(Math.random() - 0.5); }
+  randOrd() { return Math.round(myrng() - 0.5); }
 
 
   getRandomColor() {
     var c; do {
-      c = Math.floor(Math.random() * 0xFFFFFF);
+      c = Math.floor(myrng() * 0xFFFFFF);
     } while (this.colors[c]);
     this.colors[c] = true;
     return c;
@@ -208,7 +209,7 @@ class Dungeon {
             p.px = node.x + d.x; p.py = node.y + d.y;
             if (p.x > 0 && p.y > 0 && p.x < this.vw - 1 && p.y < this.vh - 1 &&
               this.isEmpty(p.x, p.y)) {
-              if (Math.random() < 0.5) r.push(p);
+              if (myrng() < 0.5) r.push(p);
               else r.unshift(p);
             }
           }
@@ -272,7 +273,7 @@ class Dungeon {
           }
           break;
         } else
-          if (Math.random() < this.settings["connectiveness"]) { this.setMaze(c.x, c.y, c1); break; }
+          if (myrng() < this.settings["connectiveness"]) { this.setMaze(c.x, c.y, c1); break; }
       }
       if (this.connections.length == 0) {
         connectingRooms = false;

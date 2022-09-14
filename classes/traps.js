@@ -17,39 +17,8 @@ class Trap extends Actor {
     this.type = 0
     this.nextAction = 0
     this.attackHandler = () => {
-      if (
-        Phaser.Math.Distance.BetweenPoints(
-          { x: this.x, y: this.y },
-          { x: this.target.x, y: this.target.y },
-        ) < this.target.width * .75
-      ) {
-        var tween = this.scene.tweens.add({
-          targets: this,
-          alpha: .2,
-          yoyo: true,
-          duration: 100
-        })
-        this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
-        this.scene.player.playerData.hp -= 1
-        this.hpBar.p = this.hp / this.hpMax
-        //this.hpValue.setText(this.hp)
-        if (this.hp < 1) {
-          // this.anims.play(this.dieKey, true);
-          this.disableBody(true, false);
-          this.scene.player.playerData.skillProgress += this.reward
-          this.scene.player.skillPop(this.reward)
-          this.scene.addScore()
-          let rand = Math.random();
-          if (rand < .75) {
-            this.scene.placeRandomAt(this.x, this.y, this.rewardItems)
-          }
-          this.scene.time.delayedCall(300, () => {
-            this.destroy();
 
-          });
-        }
 
-      }
     };
 
     // ADD TO SCENE
@@ -62,10 +31,10 @@ class Trap extends Actor {
     //  this.getBody().setOffset(0, 0);
 
     // EVENTS
-    this.scene.game.events.on(EVENTS_NAME.attack, this.attackHandler, this);
+    //this.scene.game.events.on(EVENTS_NAME.attack, this.attackHandler, this);
     this.on('destroy', () => {
-      //this.hpValue.destroy()
-      this.hpBar.bar.destroy()
+      //this.hpValue.destroy(
+
       var emitter = this.scene.add.particles('particle_color').createEmitter({
 
         speed: { min: -300, max: 300 },

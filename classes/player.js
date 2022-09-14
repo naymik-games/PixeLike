@@ -7,12 +7,14 @@ class Player extends Actor {
     this.scene = scene
     this.tick = 0
     this.playerData = gameData.playerData
+    this.alive = true
     this.immune = false;
 
     this.canExit = false
     this.hpBar = new HealthBar(scene, this.x, this.y - this.height * 0.4);
     //this.hpValue = scene.add.text(x, y, this.getHPValue(), { fontFamily: 'Arial', fontSize: 14, color: '#fff', stroke: '#000', strokeThickness: 4, }).setOrigin(0.8, 0.5);
     this.setOrigin(.5, .6)
+    this.setDepth(1)
     // PHYSICS
     this.getBody().setSize(9, 15, true);
     this.getBody().setOffset(12, 7);
@@ -63,7 +65,7 @@ class Player extends Actor {
     this.scene.anims.create({
       key: 'die',
       frames: this.anims.generateFrameNumbers('hero1', { frames: [36, 37, 38, 39, 40] }),
-      frameRate: 10,
+      frameRate: 8,
     });
 
     // console.log(this.scene.anims)
@@ -85,7 +87,7 @@ class Player extends Actor {
     })
   }
   getDamage(value) {
-    if (!this.immune) {
+    if (!this.immune && this.alive) {
       this.immune = true;
       this.playerData.hp -= value
       this.hpBar.p = this.playerData.hp / this.playerData.hpMax
@@ -98,7 +100,10 @@ class Player extends Actor {
       });
 
       if (this.playerData.hp <= 0) {
+        this.setAlpha(1)
         this.anims.play('die', true);
+        this.alive = false
+        this.scene.die()
       }
     }
 
