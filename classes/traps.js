@@ -109,7 +109,7 @@ class Trap extends Actor {
     this.scene.anims.create({
       key: this.runKey,
       frames: this.anims.generateFrameNumbers('traps', { frames: this.runFrames }),
-      frameRate: 8,
+      frameRate: 4,
     });
 
 
@@ -127,7 +127,7 @@ let trapTypes = [
     hp: 3,
     hpMax: 3,
     defense: 1,
-    power: 2,
+    power: 1,
     runKey: 'ts-run',
     runFrames: [0, 1, 2, 3, 4, 5],
 
@@ -136,16 +136,28 @@ let trapTypes = [
     rewardItems: [6, 10, 10, 10]
   },
   {
-    name: 'Skeleton',
+    name: 'fire',
     hp: 4,
     hpMax: 4,
     defense: 1,
-    power: 1,
-    runKey: 's-run',
-    runFrames: [5, 6, 7, 8],
+    power: 2,
+    runKey: 'tf-run',
+    runFrames: [6, 7, 8, 9, 10, 11],
 
-    speed: 25,
-    movement: 1,
+
+    reward: 1,
+    rewardItems: [6, 10]
+  },
+  {
+    name: 'Hole',
+    hp: 4,
+    hpMax: 4,
+    defense: 1,
+    power: 2,
+    runKey: 'th-run',
+    runFrames: [12, 13, 14, 15, 16, 17],
+
+
     reward: 1,
     rewardItems: [6, 10]
   }

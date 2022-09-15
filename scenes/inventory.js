@@ -10,7 +10,7 @@ class inventoryScene extends Phaser.Scene {
     this.Main = this.scene.get('playGame');
     this.backBack1 = this.add.image(game.config.width / 2, game.config.height / 2, 'inventory_bg')
 
-    var exit = this.add.image(750, 400, 'blank').setOrigin(.5).setTint(0xcccccc).setInteractive();
+    var exit = this.add.image(770, 400, 'blank').setOrigin(.5).setTint(0xcccccc).setInteractive();
     exit.displayWidth = 75;
     exit.displayHeight = 75;
     var count = 0

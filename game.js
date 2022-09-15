@@ -194,7 +194,11 @@ class playGame extends Phaser.Scene {
       this.events.emit('room', roomText);
 
     }
-
+    if (this.playable && this.player.alive && levels[onLevel].type == 'cave') {
+      var playerTileX = this.map.worldToTileX(this.player.x);
+      var playerTileY = this.map.worldToTileY(this.player.y);
+      this.setCorridorAlpha(playerTileX, playerTileY, 0)
+    }
     //var room = dungeon.getRoomAt(playerTileX, playerTileY);
     this.player.update()
 
@@ -278,13 +282,13 @@ class playGame extends Phaser.Scene {
     //MAP TILES
     /////////////////////////////////////////////////////////
     const tiles = autotile(dungeon.autoTileData);
-    // console.log(tiles)
+    console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
         if (tiles[y1][x1] == 0) {
           this.groundLayer.weightedRandomize([
-            { index: 0, weight: 10 },              // 9/10 times, use index 11
-            { index: [64, 65, 66, 67], weight: 1 }      // 1/10 times, randomly pick 7, 8 or 26
+            { index: 0, weight: 7 },              // 9/10 times, use index 11
+            { index: [50, 51, 52, 53], weight: 3 }      // 1/10 times, randomly pick 7, 8 or 26
           ], x1, y1);
         }
         this.groundLayer.putTileAt(tiles[y1][x1], x1, y1);
@@ -443,9 +447,9 @@ class playGame extends Phaser.Scene {
       }
     }
 
-    this.visionLayer.fill(78).setDepth(100);
+    this.visionLayer.fill(49).setDepth(100);
 
-    this.visionLayer.visible = false
+    this.visionLayer.visible = true
     /*  this.fov = new Mrpas(this.gridWidth, this.gridHeight, (x, y) => {
        const tile = this.groundLayer.getTileAt(x, y)
        return tile && !tile.collides
@@ -540,6 +544,10 @@ class playGame extends Phaser.Scene {
 
       this.placeEnemyAt(coord.x, coord.y)
     }
+
+    this.visionLayer.fill(49).setDepth(100);
+
+    this.visionLayer.visible = true
   }
 
   showMapButton() {
@@ -625,7 +633,7 @@ class playGame extends Phaser.Scene {
     var pos = this.getXY(col, row)
     var trap = new Trap(this, pos.x, pos.y, 'traps', this.player, 0)
     // var ranEn = Phaser.Math.Between(0, 2)
-    trap.setType(this, 0)
+    trap.setType(this, 2)
     this.traps.add(trap)
   }
   //get random location in a ro0m

@@ -33,9 +33,8 @@ class UIscene extends Phaser.Scene {
       this.nextSkillBG.displayHeight = 40;
    */
 
-    this.inventoryButton = this.add.image(game.config.width - 50, 100, 'blank').setOrigin(.5).setTint(0x3e5e71).setInteractive();
-    this.inventoryButton.displayWidth = 100;
-    this.inventoryButton.displayHeight = 100;
+    this.inventoryButton = this.add.image(game.config.width - 58, 58, 'tiles', 8).setOrigin(.5).setScale(6).setInteractive();
+
     this.inventoryButton.on('pointerdown', function () {
       this.Main.playable = false
       this.scene.pause('playGame')
