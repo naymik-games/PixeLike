@@ -49,7 +49,7 @@ class UIscene extends Phaser.Scene {
 
     this.levelText = this.add.bitmapText(155, 50, 'topaz', onLevel, 35).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1)
     console.log(this.Main.player.playerData)
-    this.skillText = this.add.bitmapText(18, 145, 'topaz', 'SKILL ' + this.Main.player.playerData.skillLevel, 35).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1)
+    this.skillText = this.add.bitmapText(18, 145, 'topaz', 'SKILL +' + this.Main.player.playerData.skillLevel, 35).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1)
     this.progressMeter = this.add.image(18, 185, 'blank').setOrigin(0, .5).setTint(0xE3E2BF);
     this.progressMeter.displayWidth = 250 * (this.Main.player.playerData.skillProgress / this.Main.player.playerData.skillGoal)
     this.progressMeter.displayHeight = 20;

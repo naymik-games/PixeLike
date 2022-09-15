@@ -185,3 +185,10 @@ const ROOM_FLOOR = 2;
 const PATH_FLOOR = 3;
 const PATH_WALL = 4;
 const DOOR = 3
+
+var face = {
+  right: 0,
+  left: 180,
+  up: -90,
+  down: 90
+}

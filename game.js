@@ -155,7 +155,6 @@ class playGame extends Phaser.Scene {
     this.UIscene = this.scene.get('UIscene');
     this.scene.launch('mapScene');
 
-
     //movment variables
     this.isRight = false;
     this.isLeft = false;
@@ -203,6 +202,7 @@ class playGame extends Phaser.Scene {
       this.player.body.velocity.x = this.player.playerData.speed;
       this.player.checkFlip();
       this.player.getBody().setOffset(12, 7);
+      this.player.facing = 'right'
       !this.player.anims.isPlaying && this.player.anims.play('run', true);
     } else if (this.isLeft) {
       this.player.body.velocity.x = -this.player.playerData.speed;
@@ -210,12 +210,15 @@ class playGame extends Phaser.Scene {
       // this.player.getBody().setOffset(48, 15);
 
       this.player.getBody().setOffset(21, 7);
+      this.player.facing = 'left'
       !this.player.anims.isPlaying && this.player.anims.play('run', true);
     } else if (this.isUp) {
       this.player.body.velocity.y = -this.player.playerData.speed;
+      this.player.facing = 'up'
       !this.player.anims.isPlaying && this.player.anims.play('run', true);
     } else if (this.isDown) {
       this.player.body.velocity.y = this.player.playerData.speed;
+      this.player.facing = 'down'
       !this.player.anims.isPlaying && this.player.anims.play('run', true);
 
     } else {
@@ -232,7 +235,7 @@ class playGame extends Phaser.Scene {
     var x = endCol * this.squareSize + this.squareSize / 2;
     var y = endRow * this.squareSize + this.squareSize / 2;
     this.player.setPosition(x, y)
-
+    //console.log(this.player.facing)
 
   }
   die() {

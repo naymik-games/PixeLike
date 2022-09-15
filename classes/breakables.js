@@ -32,45 +32,47 @@ var Smash = new Phaser.Class({
     // if (template.cost) this.totalCost += template.cost;
   },
   smashHandler: function () {
-    if (
-      Phaser.Math.Distance.BetweenPoints(
-        { x: this.x, y: this.y },
-        { x: this.target.x, y: this.target.y },
-      ) < this.target.width / 2
-    ) {
-      this.getDamage();
-      //  this.disableBody(true, );
-      this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
-      /*  this.scene.player.playerData.hp -= 1
-       this.scene.addScore() */
-      var tween = this.scene.tweens.add({
-        targets: this,
-        alpha: .2,
-        yoyo: true,
-        duration: 100
-      })
-      if (this.hp < 1) {
-        this.scene.time.delayedCall(100, () => {
-          var emitter = this.scene.add.particles('particle_color').createEmitter({
 
-            speed: { min: -200, max: 200 },
-            angle: { min: 0, max: 180 },
-            scale: { start: 1, end: .25 },
-            alpha: { start: .75, end: 0 },
-            blendMode: 'SCREEN',
-            lifespan: 400,
-            frame: [0, 1, 2, 3]
+    if (Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, { x: this.target.x, y: this.target.y }) < this.target.width / 2) {
+      var rad = Phaser.Math.Angle.BetweenPoints({ x: this.target.x, y: this.target.y }, { x: this.x, y: this.y })
+      var deg = Phaser.Math.RadToDeg(rad)
+      console.log(deg)
+      console.log(face[this.target.facing])
+      if (face[this.target.facing] == deg) {
+
+        this.getDamage();
+        //  this.disableBody(true, );
+        this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
+        /*  this.scene.player.playerData.hp -= 1
+        this.scene.addScore() */
+        var tween = this.scene.tweens.add({
+          targets: this,
+          alpha: .2,
+          yoyo: true,
+          duration: 100
+        })
+        if (this.hp < 1) {
+          this.scene.time.delayedCall(100, () => {
+            var emitter = this.scene.add.particles('particle_color').createEmitter({
+
+              speed: { min: -200, max: 200 },
+              angle: { min: 0, max: 180 },
+              scale: { start: 1, end: .25 },
+              alpha: { start: .75, end: 0 },
+              blendMode: 'SCREEN',
+              lifespan: 400,
+              frame: [0, 1, 2, 3]
+            });
+            emitter.explode(20, this.x, this.y);
+            let rand = Math.random();
+            if (rand < .75) {
+              this.scene.placeRandomAt(this.x, this.y, this.rewards)
+            }
+
+            this.remove()
           });
-          emitter.explode(20, this.x, this.y);
-          let rand = Math.random();
-          if (rand < .75) {
-            this.scene.placeRandomAt(this.x, this.y, this.rewards)
-          }
-
-          this.remove()
-        });
+        }
       }
-
     }
   },
   launch: function (x, y) {

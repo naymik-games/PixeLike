@@ -61,6 +61,9 @@ let objectTypes = [
     frame: 103,
     action: function () {
       this.scene.addToInventory(0)
+      this.scene.player.playerData.skillProgress += 5
+      this.scene.player.skillPop(5)
+      this.scene.addScore()
     }
 
   },
@@ -70,6 +73,9 @@ let objectTypes = [
     frame: 104,
     action: function () {
       this.scene.addToInventory(0)
+      this.scene.player.playerData.skillProgress += 5
+      this.scene.player.skillPop(5)
+      this.scene.addScore()
     }
 
   },
@@ -79,6 +85,9 @@ let objectTypes = [
     frame: 105,
     action: function () {
       this.scene.addToInventory(3)
+      this.scene.player.playerData.skillProgress += 5
+      this.scene.player.skillPop(5)
+      this.scene.addScore()
     }
   },
   {

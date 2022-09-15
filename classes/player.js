@@ -9,7 +9,7 @@ class Player extends Actor {
     this.playerData = gameData.playerData
     this.alive = true
     this.immune = false;
-
+    this.facing = 'right'
     this.canExit = false
     this.hpBar = new HealthBar(scene, this.x, this.y - this.height * 0.4);
     //this.hpValue = scene.add.text(x, y, this.getHPValue(), { fontFamily: 'Arial', fontSize: 14, color: '#fff', stroke: '#000', strokeThickness: 4, }).setOrigin(0.8, 0.5);

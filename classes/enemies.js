@@ -17,38 +17,38 @@ class Enemy extends Actor {
     this.type = 0
     this.nextAction = 0
     this.attackHandler = () => {
-      if (
-        Phaser.Math.Distance.BetweenPoints(
-          { x: this.x, y: this.y },
-          { x: this.target.x, y: this.target.y },
-        ) < this.target.width * .75
-      ) {
-        var tween = this.scene.tweens.add({
-          targets: this,
-          alpha: .2,
-          yoyo: true,
-          duration: 100
-        })
-        this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
-        this.scene.player.playerData.hp -= 1
-        this.hpBar.p = this.hp / this.hpMax
-        //this.hpValue.setText(this.hp)
-        if (this.hp < 1) {
-          // this.anims.play(this.dieKey, true);
-          this.disableBody(true, false);
-          this.scene.player.playerData.skillProgress += this.reward
-          this.scene.player.skillPop(this.reward)
-          this.scene.addScore()
-          let rand = Math.random();
-          if (rand < .75) {
-            this.scene.placeRandomAt(this.x, this.y, this.rewardItems)
+      if (Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, { x: this.target.x, y: this.target.y }) < this.target.width * .75) {
+        var rad = Phaser.Math.Angle.BetweenPoints({ x: this.target.x, y: this.target.y }, { x: this.x, y: this.y })
+        var deg = Phaser.Math.RadToDeg(rad)
+        console.log(deg)
+        console.log(face[this.target.facing])
+        if (face[this.target.facing] > deg - 10 && face[this.target.facing] < deg + 10) {
+          var tween = this.scene.tweens.add({
+            targets: this,
+            alpha: .2,
+            yoyo: true,
+            duration: 100
+          })
+          this.hp -= this.scene.player.playerData.power * this.scene.player.playerData.strength
+          this.scene.player.playerData.hp -= 1
+          this.hpBar.p = this.hp / this.hpMax
+          //this.hpValue.setText(this.hp)
+          if (this.hp < 1) {
+            // this.anims.play(this.dieKey, true);
+            this.disableBody(true, false);
+            this.scene.player.playerData.skillProgress += this.reward
+            this.scene.player.skillPop(this.reward)
+            this.scene.addScore()
+            let rand = Math.random();
+            if (rand < .75) {
+              this.scene.placeRandomAt(this.x, this.y, this.rewardItems)
+            }
+            this.scene.time.delayedCall(300, () => {
+              this.destroy();
+
+            });
           }
-          this.scene.time.delayedCall(300, () => {
-            this.destroy();
-
-          });
         }
-
       }
     };
 

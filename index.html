@@ -10,11 +10,22 @@
   <link rel="icon" href="img/icon-192.png" sizes="192x192" />
   <link rel="icon" href="img/icon-256.png" sizes="256x256" />
   <link rel="icon" href="img/icon-512.png" sizes="512x512" />
+  <!--  <link rel="preload" as="font" href="assets/fonts/alagard.ttf" type="font/ttf" /> -->
   <style type="text/css">
     body {
       background: #000000;
       padding: 0px;
       margin: 0px;
+    }
+
+    @font-face {
+      font-family: CustomFont;
+      src: url('assets/fonts/romulus.ttf');
+    }
+
+    @font-face {
+      font-family: CustomFontAlagard;
+      src: url('assets/fonts/alagard.ttf');
     }
 
     /* The Modal (background) */
@@ -81,6 +92,8 @@
 </head>
 
 <body>
+  <div style="font-family: CustomFont; position:absolute; left:-1000px; visibility:hidden;">.</div>
+  <div style="font-family: CustomFontAlagard; position:absolute; left:-1000px; visibility:hidden;">.</div>
   <!-- The Modal -->
   <div id="myModal" class="modal">
     <!-- Modal content -->
@@ -163,7 +176,7 @@
   <script src="classes/dungeon-2/generators/generator.js"></script>
   <script src="classes/dungeon-2/generators/dungeon.js"></script> -->
 
-
+  <script src="classes/button.js"></script>
   <script src="classes/breakables.js"></script>
   <script src="classes/doors.js"></script>
   <script src="classes/actor.js"></script>
