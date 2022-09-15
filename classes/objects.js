@@ -46,11 +46,12 @@ var Collectables = new Phaser.Class({
 
 });
 
-let multiIndexes = [0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
-let barrelReward = [6, 10, 15, 16, 17, 18, 33, 34, 35]
+let multiIndexes = [0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56]
 let vaseReward = [6, 10, 26, 23]
-let chestReward = [16, 12, 14, 16, 33]
+let barrelReward = [6, 10, 15, 16, 17, 18, 33, 34, 35]
 let crateReward = [7, 8, 9, 13, 17, 18, 19, 20, 21, 23, 25]
+let chestReward = [16, 12, 14, 16, 33]
+
 let bookcaseReward = [0, 1, 2, 27, 11, 28, 29, 30, 31]
 
 
@@ -125,24 +126,24 @@ let objectTypes = [
     }
   },
   {
-    name: 'Potion Orange',
-    frame: 112,
+    name: 'Gold Sheild',
+    frame: 14,
     id: 7,
     action: function () {
       this.scene.addToInventory(7)
     }
   },
   {
-    name: 'Potion Blue',
-    frame: 113,
+    name: 'Silver Sheild',
+    frame: 15,
     id: 8,
     action: function () {
       this.scene.addToInventory(8)
     }
   },
   {
-    name: 'Potion Green',
-    frame: 114,
+    name: 'Bronze Sheld',
+    frame: 9,
     id: 9,
     action: function () {
       this.scene.addToInventory(9)
@@ -358,6 +359,174 @@ let objectTypes = [
     frame: 149,
     action: function () {
       this.scene.addToInventory(35)
+    }
+  },
+  {
+    name: 'Box',
+    id: 36,
+    frame: 85,
+    action: function () {
+      this.scene.addToInventory(36)
+    }
+  },
+  {
+    name: 'Sword',
+    id: 37,
+    frame: 19,
+    action: function () {
+      this.scene.addToInventory(37)
+    }
+  },
+  {
+    name: 'Chalice',
+    id: 38,
+    frame: 5,
+    action: function () {
+      this.scene.addToInventory(38)
+    }
+  },
+  {
+    name: 'Gauntlet',
+    id: 39,
+    frame: 6,
+    action: function () {
+      this.scene.addToInventory(39)
+    }
+  },
+  {
+    name: 'Red Apple',
+    id: 40,
+    frame: 7,
+    action: function () {
+      this.scene.addToInventory(40)
+    }
+  },
+  {
+    name: 'Jar',
+    id: 41,
+    frame: 9,
+    action: function () {
+      this.scene.addToInventory(41)
+    }
+  },
+  {
+    name: 'Small Orange Potion',
+    id: 42,
+    frame: 10,
+    action: function () {
+      this.scene.addToInventory(42)
+    }
+  },
+  {
+    name: 'Small Blue Potion',
+    id: 43,
+    frame: 11,
+    action: function () {
+      this.scene.addToInventory(42)
+    }
+  },
+  {
+    name: 'Small Green Potion',
+    id: 44,
+    frame: 12,
+    action: function () {
+      this.scene.addToInventory(44)
+    }
+  },
+  {
+    name: 'Small Red Potion',
+    id: 45,
+    frame: 13,
+    action: function () {
+      this.scene.addToInventory(45)
+    }
+  },
+  {
+    name: 'Medium Orange Potion',
+    id: 46,
+    frame: 20,
+    action: function () {
+      this.scene.addToInventory(46)
+    }
+  },
+  {
+    name: 'Medium Blue Potion',
+    id: 47,
+    frame: 21,
+    action: function () {
+      this.scene.addToInventory(47)
+    }
+  },
+  {
+    name: 'Medium Green Potion',
+    id: 48,
+    frame: 22,
+    action: function () {
+      this.scene.addToInventory(48)
+    }
+  },
+  {
+    name: 'Medium Red Potion',
+    id: 49,
+    frame: 23,
+    action: function () {
+      this.scene.addToInventory(49)
+    }
+  },
+  {
+    name: 'Large Orange Potion',
+    id: 50,
+    frame: 30,
+    action: function () {
+      this.scene.addToInventory(50)
+    }
+  },
+  {
+    name: 'Large Blue Potion',
+    id: 51,
+    frame: 31,
+    action: function () {
+      this.scene.addToInventory(51)
+    }
+  },
+  {
+    name: 'Large Green Potion',
+    id: 52,
+    frame: 32,
+    action: function () {
+      this.scene.addToInventory(52)
+    }
+  },
+  {
+    name: 'Large Red Potion',
+    id: 53,
+    frame: 33,
+    action: function () {
+      this.scene.addToInventory(53)
+    }
+  },
+  {
+    name: 'Green Apple',
+    id: 54,
+    frame: 18,
+    action: function () {
+      this.scene.addToInventory(54)
+    }
+  },
+  {
+    name: 'Mushroom 1',
+    id: 55,
+    frame: 24,
+    action: function () {
+      this.scene.addToInventory(55)
+    }
+  },
+  {
+    name: 'Mushroom 2',
+    id: 56,
+    frame: 25,
+    action: function () {
+      this.scene.addToInventory(56)
     }
   }
 ]

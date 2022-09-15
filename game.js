@@ -97,7 +97,6 @@ class playGame extends Phaser.Scene {
     this.enemies = this.physics.add.group()
     this.traps = this.physics.add.group()
     objects = this.physics.add.group({ classType: Collectables, runChildUpdate: false });
-
     breakables = this.physics.add.group({ classType: Smash, runChildUpdate: false })
 
     if (levels[onLevel].type == 'dungeon') {
@@ -172,7 +171,7 @@ class playGame extends Phaser.Scene {
 
     this.playable = true
     //this.UIscene.toast.showMessage('Hello world')
-
+    this.events.emit('message', 'hello world!');
     ///help.setScrollFactor(0);
   }
   update() {

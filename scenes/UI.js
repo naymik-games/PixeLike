@@ -58,7 +58,7 @@ class UIscene extends Phaser.Scene {
 
     this.healthText = this.add.bitmapText(400, 35, 'topaz', this.Main.player.playerData.hp, 50).setOrigin(1, .5).setTint(0xcbf7ff).setAlpha(1);
     //this.healthIcon = this.add.image(15, 35, 'tiles', 115).setScale(4).setOrigin(0, .5)
-
+    this.strengthText = this.add.bitmapText(435, 35, 'topaz', 'P: ' + this.Main.player.playerData.power + 'S: ' + this.Main.player.playerData.strength, 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
     this.goldText = this.add.bitmapText(400, 105, 'topaz', this.Main.player.playerData.gold, 50).setOrigin(1, .5).setTint(0xcbf7ff).setAlpha(1);
     // this.goldIcon = this.add.image(this.goldText.x, 35, 'tiles', 86).setScale(4).setOrigin(0, .5)
 
@@ -110,7 +110,9 @@ class UIscene extends Phaser.Scene {
     this.Main.events.on('room', function (roomText) {
       this.helpText.setText(roomText)
     }, this)
-
+    this.Main.events.on('message', function (messageText) {
+      this.showToast(messageText)
+    }, this)
     this.Main.events.on('mapButton', function (roomText) {
       this.tweens.add({
         targets: this.mapButton,
@@ -136,7 +138,58 @@ class UIscene extends Phaser.Scene {
 
   }
 
+  showToast(text) {
+    console.log('toast')
+    if (this.toastBox) {
+      this.toastBox.destroy(true);
+    }
+    var toastBox = this.add.container().setDepth(6);
+    var backToastb = this.add.image(0, 0, 'blank').setDepth(2).setTint(0x333333);
+    backToastb.setAlpha(1);
+    backToastb.displayWidth = 720;
+    backToastb.displayHeight = 110;
+    toastBox.add(backToastb);
+    var backToast = this.add.image(0, 0, 'blank').setDepth(2).setTint(0x000000);
+    backToast.setAlpha(1);
+    backToast.displayWidth = 700;
+    backToast.displayHeight = 90;
+    toastBox.add(backToast);
+    toastBox.setPosition(game.config.width + 800, 1120);
+    var toastText = this.add.bitmapText(20, -10, 'topaz', text, 50,).setTint(0x00ff66).setOrigin(.5, .5).setDepth(6);
+    //toastText.setMaxWidth(game.config.width - 10);
+    toastBox.add(toastText);
+    this.toastBox = toastBox;
+    this.tweens.add({
+      targets: this.toastBox,
+      //alpha: .5,
+      x: 450,
+      duration: 500,
+      //  yoyo: true,
+      callbackScope: this,
+      onComplete: function () {
+        this.time.addEvent({
+          delay: 2500,
+          callback: this.hideToast,
+          callbackScope: this
+        });
+      }
+    });
+    //this.time.addEvent({delay: 2000, callback: this.hideToast, callbackScope: this});
+  }
+  hideToast() {
+    this.tweens.add({
+      targets: this.toastBox,
+      //alpha: .5,
+      x: -800,
+      duration: 500,
+      //  yoyo: true,
+      callbackScope: this,
+      onComplete: function () {
+        this.toastBox.destroy(true);
+      }
+    });
 
+  }
 
 }
 
