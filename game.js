@@ -18,6 +18,7 @@ window.onload = function () {
         debug: false,
       },
     },
+
     render: {
       antialiasGL: false,
       pixelArt: true,
@@ -78,7 +79,7 @@ class playGame extends Phaser.Scene {
     }
 
 
-
+    this.equipedItem = null
     // Load up a tileset, in this case, the tileset has 1px margin & 2px padding (last two arguments)
 
 
@@ -137,6 +138,8 @@ class playGame extends Phaser.Scene {
     this.physics.add.overlap(this.player, objects, (obj1, obj2) => {
       obj2.action()
 
+
+      this.events.emit('showMessage', 'picked up ' + obj2.name);
       obj2.destroy();
       this.cameras.main.flash();
     });
@@ -171,7 +174,7 @@ class playGame extends Phaser.Scene {
 
     this.playable = true
     //this.UIscene.toast.showMessage('Hello world')
-    this.events.emit('message', 'hello world!');
+
     ///help.setScrollFactor(0);
   }
   update() {
@@ -228,6 +231,13 @@ class playGame extends Phaser.Scene {
       this.stop();
 
     }
+
+
+
+
+
+
+
   }
   stop() {
     this.player.body.setVelocity(0);
@@ -738,6 +748,7 @@ class playGame extends Phaser.Scene {
   }
   addScore() {
     this.events.emit('score');
+
   }
   saveGame() {
     gameData = {}

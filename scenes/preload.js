@@ -77,7 +77,7 @@ class preloadGame extends Phaser.Scene {
        //spacing:2
  
      }); */
-    this.load.spritesheet("d_tiles", "assets/sprites/dungeon_tiles.png", {
+    this.load.spritesheet("d_tiles", "assets/sprites/dungeon_tiles_dark.png", {
       frameWidth: 16,
       frameHeight: 16,
       //margin: 2,

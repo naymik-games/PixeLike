@@ -110,7 +110,8 @@ class UIscene extends Phaser.Scene {
     this.Main.events.on('room', function (roomText) {
       this.helpText.setText(roomText)
     }, this)
-    this.Main.events.on('message', function (messageText) {
+    this.Main.events.on('showMessage', function (messageText) {
+      console.log('message')
       this.showToast(messageText)
     }, this)
     this.Main.events.on('mapButton', function (roomText) {

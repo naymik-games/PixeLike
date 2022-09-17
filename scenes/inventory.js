@@ -13,7 +13,10 @@ class inventoryScene extends Phaser.Scene {
     var exit = this.add.image(770, 400, 'blank').setOrigin(.5).setTint(0xcccccc).setInteractive();
     exit.displayWidth = 75;
     exit.displayHeight = 75;
+    this.click = 0
+    this.delay = 500
     var count = 0
+    this.inventoryDisplay = []
     for (var i = 0; i < 4; i++) {
       for (var j = 0; j < 4; j++) {
         var tile = this.add.image(225 + j * 145, 500 + i * 145, 'inventory_item').setOrigin(.5);
@@ -23,6 +26,8 @@ class inventoryScene extends Phaser.Scene {
           var obID = this.Main.player.playerData.inventory[count]
           var ob = this.add.image(tile.x, tile.y, 'tiles', objectTypes[obID].frame).setScale(5).setInteractive()
           ob.item = obID
+          this.inventoryDisplay.push(ob)
+          ob.on('pointerdown', this.startSelect.bind(this, ob))
           ob.on('pointerup', this.selectItem.bind(this, ob))
         }
         count++
@@ -52,11 +57,40 @@ class inventoryScene extends Phaser.Scene {
       this.Main.playable = true
     }, this);
     this.selected = this.add.image(-50, -50, 'inventory_item_selected').setOrigin(.5).setScale(1.25)
+
+  }
+  startSelect() {
+    this.click = this.getTime();
   }
   selectItem(t) {
-    console.log(t.item)
-    this.selectedText.setText(objectTypes[t.item].name)
-    this.selected.setPosition(t.x, t.y)
+
+    /*    function onDOWN(graphics, pointer) {
+         _clickTimer = game.time.now;
+         console.log("Pressed at: " + _clickTimer);
+       }
+       
+       function onUP(object, pointer, isOver){
+         var timenow = game.time.now;
+         if (timenow > _clickTimer + _delay){
+           alert("okay");
+           console.log("Released at: " + timenow);
+         }else{
+           console.log("Released too soon");
+         }
+       } */
+
+    var timenow = this.getTime();
+    if (timenow > this.click + this.delay) {
+
+      console.log('Show item description');
+    } else {
+      console.log(t.item)
+      this.selectedItem = t
+      this.selectedText.setText(objectTypes[t.item].name)
+      this.selected.setPosition(t.x, t.y)
+    }
+
+
   }
   use() {
 
@@ -65,6 +99,20 @@ class inventoryScene extends Phaser.Scene {
 
   }
   delete() {
+    var ind = this.Main.player.playerData.inventory.indexOf(this.selectedItem.item)
+    this.Main.player.playerData.inventory.splice(ind, 1)
+    this.selectedItem.destroy()
 
+    this.selected.setPosition(-50, -50)
+    this.selectedText.setText('')
+    console.log('Delete item ' + this.selectedItem.item + ' at index ' + ind)
+    this.selectedItem = null
+  }
+  getTime() {
+    //make a new date object
+    let d = new Date();
+
+    //return the number of milliseconds since 1 January 1970 00:00:00.
+    return d.getTime();
   }
 }

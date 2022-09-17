@@ -228,7 +228,7 @@ let enemyTypes = [
     runFrames: [20, 21, 22, 23],
 
     speed: 80,
-    movement: 0,
+    movement: 1,
     reward: 1,
     rewardItems: [6, 10]
   }
