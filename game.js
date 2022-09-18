@@ -47,6 +47,7 @@ class playGame extends Phaser.Scene {
     onLevel++
 
     let tileset
+    let tileset2
     // Create a blank map
     if (levels[onLevel].type == 'dungeon') {
       this.map = this.make.tilemap({
@@ -62,6 +63,7 @@ class playGame extends Phaser.Scene {
       this.yOffset = 0
       this.squareSize = 16
       tileset = this.map.addTilesetImage("d_tiles", null, 16, 16, 0, 0);
+      tileset2 = this.map.addTilesetImage("tiles", null, 16, 16, 0, 0);
     } else {
       this.map = this.make.tilemap({
         tileWidth: 16,
@@ -76,6 +78,7 @@ class playGame extends Phaser.Scene {
       this.yOffset = 0
       this.squareSize = 16
       tileset = this.map.addTilesetImage("c_tiles", null, 16, 16, 0, 0);
+      tileset2 = this.map.addTilesetImage("tiles", null, 16, 16, 0, 0);
     }
 
 
@@ -86,7 +89,7 @@ class playGame extends Phaser.Scene {
     // Create empty layers. One for ground, one for stuff
 
     this.groundLayer = this.map.createBlankLayer("Ground", tileset); // Wall & floor
-    this.stuffLayer = this.map.createBlankLayer("Stuff", tileset); // Chest, stairs, etc.
+    this.stuffLayer = this.map.createBlankLayer("Stuff", tileset2); // Chest, stairs, etc.
     this.visionLayer = this.map.createBlankLayer("Vision", tileset); // visibility
     //fill blank tiles
     this.groundLayer.fill(0);
@@ -368,7 +371,7 @@ class playGame extends Phaser.Scene {
 
 
     //fill stuff layer with blank tiles
-    this.stuffLayer.fill(48);
+    this.stuffLayer.fill(109);
     // Place the stairs in end room
     this.stuffLayer.putTileAt(53, endRoom.center.x, endRoom.center.y);
     //make stairs interactive
@@ -477,6 +480,7 @@ class playGame extends Phaser.Scene {
     console.log(cave.map)
 
     this.tileData = JSON.parse(JSON.stringify(cave.map));
+
     // } else {
     /*  cave = new CaveAlt(levels[onLevel].dungeon.cols, levels[onLevel].dungeon.rows)
      var map = cave.generateBoard();
@@ -494,6 +498,15 @@ class playGame extends Phaser.Scene {
     /////////////////////////////////////////////////////////
     //var tiles = this.tileData
     const tiles = autotile(this.tileData);
+    /*   for (var y1 = 0; y1 < this.tileData.length; y1++) {
+        for (var x1 = 0; x1 < this.tileData[0].length; x1++) {
+          if (tiles[y1][x1] == 0) {
+            tiles[y1][x1] = 1
+          } else {
+            tiles[y1][x1] = 0
+          }
+        }
+      } */
     console.log(tiles)
     for (var y1 = 0; y1 < this.tileData.length; y1++) {
       for (var x1 = 0; x1 < this.tileData[0].length; x1++) {

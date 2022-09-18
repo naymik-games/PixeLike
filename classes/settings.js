@@ -119,9 +119,14 @@ let levels = [
       roomMinSize: 2,//2 half 2 = 5
       roomMaxSize: 5, //5 half 5 = 10
       connectiveness: 1 / 40,
-      halfHeight: 12,//12
-      halftWidth: 32 //32
+      halfHeight: 10,//12
+      halftWidth: 28 //32
     },
+    keys: 1
+  },
+  {
+    type: 'cave',
+    dungeon: { cols: 70, rows: 60 },
     keys: 1
   },
   {
